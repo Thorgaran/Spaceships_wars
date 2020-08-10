@@ -49,6 +49,6 @@ class Planet():
             if self.nb_ships > -1 and self.nb_ships < 1:  # fleets annihilation
                 self.owner = None
                 self.nb_ships = 0
-            if self.nb_ships < -1:  # planet conquered
+            if self.nb_ships <= -1:  # planet conquered
                 self.nb_ships = int(-self.nb_ships) + 1
                 self.owner = fleet.owner

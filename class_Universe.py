@@ -72,15 +72,15 @@ class Universe():
         Prepare the next turn
         """
         self.turn += 1
+        
+        for planet in self.planets:
+            if planet.owner is not None:
+                planet.nb_ships += 1
 
         for fleet in self.fleets:
             fleet.next_turn()
             if fleet.turns_before_arrival == 0:
                 self.landing(fleet, fleet.destination_planet)
-        
-        for planet in self.planets:
-            if planet.owner is not None:
-                planet.nb_ships += 1
     
     def landing(self, fleet, planet):
         """
