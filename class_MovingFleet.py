@@ -37,7 +37,7 @@ class MovingFleet():
 
         return travel_time
 
-    def next_turn(self)
+    def next_turn(self):
         """
         Prepare the next turn
         """
