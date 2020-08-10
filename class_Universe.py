@@ -66,5 +66,5 @@ class Universe():
 
 # =================================================================================================
 if __name__ == "__main__":
-    univers = Univers()
+    univers = Universe()
     univers.big_bang(size=10, nb_planets=10)
