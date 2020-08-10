@@ -12,11 +12,10 @@ class Planet():
     - owner = player owner of the planet -> None/1/2
     - nb_ships = number of ships belonging to the owner -> int
     """
-    def __init__(self, x, y, size, owner, nb_ships):
+    def __init__(self, x, y, size, owner):
         self.x, self.y = x, y
         self.size = size
         self.owner = owner
-        self.nb_ships = nb_ships
     
     def landing(self, fleet):
         """
