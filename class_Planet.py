@@ -33,7 +33,7 @@ class Planet():
         self.nb_ships -= nb
         if self.nb_ships < 0:
             raise ValueError("Not enough ships for the take off !")
-         if self.nb_ships < 1:
+        if self.nb_ships < 1:
             self.owner = None
             self.nb_ships = 0
        return
