@@ -44,13 +44,13 @@ class Universe():
             raise ValueError("Not enough planets!")
 
         # place the neutral planets
-        occupied_position = [(0, 0), (size, size)]
+        occupied_positions = [(0, 0), (size-1, size-1)]
         self.planets = []
         for i in range(nb_planets-2):
             x, y = 0, 0
-            while (x, y) in occupied_position:
-                x, y = randint(0, size), randint(0, size)
-            occupied_position.append((x, y))
+            while (x, y) in occupied_positions:
+                x, y = randint(0, size-1), randint(0, size-1)
+            occupied_positions.append((x, y))
             planet_size = randint(1, size_planet_max)
             planet = Planet(x, y, size=planet_size, production_per_turn=planet_size/coef_production, nb_max_ships=planet_size*coef_max_ships)
             self.planets.append(planet)
@@ -58,11 +58,14 @@ class Universe():
         # and the planets for the players
         planet = Planet(0, 0, size=1, owner=1, nb_ships=1, production_per_turn=planet_size/coef_production, nb_max_ships=1*coef_max_ships)
         self.planets.append(planet)
-        planet = Planet(size, size, size=1, owner=2, nb_ships=1, production_per_turn=planet_size/coef_production, nb_max_ships=1*coef_max_ships)
+        planet = Planet(size-1, size-1, size=1, owner=2, nb_ships=1, production_per_turn=planet_size/coef_production, nb_max_ships=1*coef_max_ships)
         self.planets.append(planet)
         
         # fleets initialization
-        universe.fleets = []
+        self.fleets = []
+
+        # size initialization
+        self.size = size
 
         # turn initialization
         self.turn = 0
@@ -103,10 +106,3 @@ class Universe():
 if __name__ == "__main__":
     universe = Universe()
     universe.big_bang(size=10, nb_planets=10)
-    universe.take_off(
-        planet=universe.planets[8],
-        destination=universe.planets[0],
-        nb_ships=universe.planets[8].nb_ships,
-        speed=2)
-    for i in range(10):
-        universe.next_turn()
