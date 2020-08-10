@@ -8,8 +8,8 @@
 class MovingFleet():
     """
     - self.owner = the player who owns this fleet -> int
-    - self.starting_planet = the planet the fleet departed from -> class planet
-    - sef.destination_planet = the planet the fleet is headed to -> class planet
+    - self.starting_planet = the planet the fleet departed from -> class Planet
+    - sef.destination_planet = the planet the fleet is headed to -> class Planet
     - self.nb_of_ships = the number of ships composing the fleet -> int
     - self.turns_before_arrival = the number of turns left to travel -> int
     """
