@@ -5,7 +5,7 @@
 #  
 #  
 
-class MovingFleet():
+class Fleet():
     """
     - self.owner = the player who owns this fleet -> None/1/2
     - self.starting_planet = the planet the fleet departed from -> class Planet
