@@ -14,16 +14,16 @@ class Universe():
     - a size for the grid (from 0 to x-1 and y-1) -> int
     - some planets -> [class Planet]
     - some fleets -> [class Fleet]
-    - a time -> int
+    - a turn -> int
 
     Methods
     - big bang -> object initialization
     """
-    def __init__(self, size=None, planets=None, fleets=None, time=None):
+    def __init__(self, size=None, planets=None, fleets=None, turn=None):
         self.size = size
         self.planets = planets
         self.fleets = fleets
-        self.time = time
+        self.turn = turn
 
     def big_bang(self, size, nb_planets, size_planet_max=3, coef_production=1, coef_max_ships=10):
         """
@@ -64,13 +64,15 @@ class Universe():
         # fleets initialization
         universe.fleets = []
 
-        # time initialization
-        self.time = 0
+        # turn initialization
+        self.turn = 0
 
     def next_turn(self):
         """
         Prepare the next turn
         """
+        self.turn += 1
+
         for fleet in self.fleets:
             fleet.next_turn()
             if fleet.turns_before_arrival == 0:
@@ -101,6 +103,10 @@ class Universe():
 if __name__ == "__main__":
     universe = Universe()
     universe.big_bang(size=10, nb_planets=10)
-    universe.take_off(universe.planets[8], universe.planets[0], universe.planets[8].nb_ships, 2)
+    universe.take_off(
+        planet=universe.planets[8],
+        destination=universe.planets[0],
+        nb_ships=universe.planets[8].nb_ships,
+        speed=2)
     for i in range(10):
         universe.next_turn()

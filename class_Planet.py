@@ -45,7 +45,7 @@ class Planet():
         if fleet.owner == self.owner:
             self.nb_ships += fleet.nb_ships
         else:  # it's an attack
-            self.nb_ships -= fleet.nb_of_ships
+            self.nb_ships -= fleet.nb_ships
             if self.nb_ships > -1 and self.nb_ships < 1:  # fleets annihilation
                 self.owner = None
                 self.nb_ships = 0
