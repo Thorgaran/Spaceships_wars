@@ -45,11 +45,24 @@ class Universe():
             while (x, y) in occupied_position:
                 x, y = randint(0, size), randint(0, size)
             size = randint(1, size_planet_max)
-            planet = Planet(x, y, size, player=0)
+            planet = Planet(x, y, size)
             self.planets.append(planet)
         
         # time initialization
         self.time = 0
+    
+    def landing(self, fleet, planet):
+        """
+        A fleet is landing on the planet.
+        """
+        pass
+    
+    def take_off(self, planet, destination):
+        """
+        A fleet is taking off from the planet, to an other planet (the destination).
+        """
+        pass
+
 
 # =================================================================================================
 if __name__ == "__main__":
