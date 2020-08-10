@@ -36,7 +36,7 @@ class Planet():
         if self.nb_ships < 1:
             self.owner = None
             self.nb_ships = 0
-       return
+        return
     
     def landing_ships(self, fleet):
         """
