@@ -18,7 +18,7 @@ class Planet():
     - take_off_ships
     - landing_ships
     """
-    def __init__(self, x, y, size, owner=None, nb_ships=None):
+    def __init__(self, x, y, size, production_per_turn, nb_max_ships, owner=None, nb_ships=None):
         self.x, self.y = x, y
         self.owner = owner
         if owner is None:  # neutral planet

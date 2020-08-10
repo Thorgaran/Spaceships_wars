@@ -30,24 +30,32 @@ class Universe():
         Function to initialize the universe : its planets and the time.
         The number ot planets can't exceed size²/2, otherwise an error is raised.
 
-        nb_planets = nb of planets in the universe
+        nb_planets = nb of planets in the universe. Must be 3, at least
         """
         from random import randint
 
         if nb_planets > size**2 / 2:
             raise ValueError("Too many planets!")
+        if nb_planets < 3:
+            raise ValueError("Not enough planets!")
 
-        # place the planets
-        occupied_position = [(None, None)]
+        # place the neutral planets
+        occupied_position = [(0, 0), (size, size)]
         self.planets = []
-        for i in range(nb_planets):
+        for i in range(nb_planets-2):
             x, y = None, None
             while (x, y) in occupied_position:
                 x, y = randint(0, size), randint(0, size)
             occupied_position.append((x, y))
             planet_size = randint(1, size_planet_max)
-            planet = Planet(x, y, planet_size, owner=0)
+            planet = Planet(x, y, size=planet_size, production_per_turn=planet_size/2, nb_max_ships=planet_size*10)
             self.planets.append(planet)
+
+        # and the planets for the players
+        planet = Planet(0, 0, size=1, owner=1, nb_ships=1, production_per_turn=1/2, nb_max_ships=1*10)
+        self.planets.append(planet)
+        planet = Planet(size, size, size=1, owner=2, nb_ships=1, production_per_turn=1/2, nb_max_ships=1*10)
+        self.planets.append(planet)
         
         # time initialization
         self.time = 0
@@ -60,6 +68,10 @@ class Universe():
             moving_fleet.next_turn
             if moving_fleet.turns_before_arrival == 0:
                 self.landing(moving_fleet, moving_fleet.destination_planet)
+        
+        for planet in self.planets:
+            if planet.owner is not None:
+                planet.nb_ships += 1
     
     def landing(self, fleet, planet):
         """
