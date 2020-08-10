@@ -51,6 +51,15 @@ class Universe():
         
         # time initialization
         self.time = 0
+
+    def next_turn(self):
+        """
+        Prepare the next turn
+        """
+        for moving_fleet in self.moving_fleets:
+            moving_fleet.next_turn
+            if moving_fleet.turns_before_arrival == 0:
+                self.landing(moving_fleet, moving_fleet.destination_planet)
     
     def landing(self, fleet, planet):
         """
@@ -63,21 +72,6 @@ class Universe():
         A fleet is taking off from the planet, to an other planet (the destination).
         """
         pass
-
-
-    @staticmethod
-    def compute_travel_time(planet1, planet2, travel_speed):
-        """
-        Given two planets and a speed, compute the number of turns it takes to travel between them
-        
-        travel_speed = the distance covered per turn
-        """
-        from math import ceil, sqrt
-
-        distance = sqrt((planet1.x - planet2.x)**2 + (planet1.y - planet2.y)**2)
-        travel_time = ceil(distance / travel_speed)
-
-        return travel_time
 
 
 # =================================================================================================
