@@ -6,23 +6,23 @@
 #  
 
 from class_Planet import *
-from class_MovingFleet import *
+from class_Fleet import *
 
 class Universe():
     """
     A Universe is defined by
     - a size for the grid (from 0 to x-1 and y-1) -> int
     - some planets -> [class Planet]
-    - some moving fleets -> [class MovingFleet]
+    - some fleets -> [class Fleet]
     - a time -> int
 
     Methods
     - big bang -> object initialization
     """
-    def __init__(self, size=None, planets=None, moving_fleets=None, time=None):
+    def __init__(self, size=None, planets=None, fleets=None, time=None):
         self.size = size
         self.planets = planets
-        self.moving_fleets = moving_fleets
+        self.fleets = fleets
         self.time = time
 
     def big_bang(self, size, nb_planets, size_planet_max=3):
@@ -43,7 +43,7 @@ class Universe():
         occupied_position = [(0, 0), (size, size)]
         self.planets = []
         for i in range(nb_planets-2):
-            x, y = None, None
+            x, y = 0, 0
             while (x, y) in occupied_position:
                 x, y = randint(0, size), randint(0, size)
             occupied_position.append((x, y))
@@ -64,21 +64,21 @@ class Universe():
         """
         Prepare the next turn
         """
-        for moving_fleet in self.moving_fleets:
-            moving_fleet.next_turn()
-            if moving_fleet.turns_before_arrival == 0:
-                self.landing(moving_fleet, moving_fleet.destination_planet)
+        for fleet in self.fleets:
+            fleet.next_turn()
+            if fleet.turns_before_arrival == 0:
+                self.landing(fleet, fleet.destination_planet)
         
         for planet in self.planets:
             if planet.owner is not None:
                 planet.nb_ships += 1
     
-    def landing(self, moving_fleet, planet):
+    def landing(self, fleet, planet):
         """
         A fleet is landing on the planet.
         """
-        planet.landing_ships(moving_fleet)
-        self.moving_fleets.remove(moving_fleet)
+        planet.landing_ships(fleet)
+        self.fleets.remove(fleet)
     
     def take_off(self, planet, destination, speed):
         """
@@ -91,8 +91,8 @@ class Universe():
 if __name__ == "__main__":
     universe = Universe()
     universe.big_bang(size=10, nb_planets=10)
-    universe.moving_fleets = []
-    universe.moving_fleets.append(MovingFleet(1, universe.planets[0], universe.planets[1], 5, 2))
+    universe.fleets = []
+    universe.fleets.append(Fleet(1, universe.planets[0], universe.planets[1], 5, 2))
     universe.planets[1].nb_ships = 0
     for i in range(10):
         universe.next_turn()
