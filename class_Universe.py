@@ -51,6 +51,19 @@ class Universe():
         
         # time initialization
         self.time = 0
+    
+    def landing(self, fleet, planet):
+        """
+        A fleet is landing on the planet.
+        """
+        pass
+    
+    def take_off(self, planet, destination):
+        """
+        A fleet is taking off from the planet, to an other planet (the destination).
+        """
+        pass
+
 
     @staticmethod
     def compute_travel_time(planet1, planet2, travel_speed):
