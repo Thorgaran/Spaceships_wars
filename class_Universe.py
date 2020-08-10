@@ -44,8 +44,9 @@ class Universe():
             x, y = None, None
             while (x, y) in occupied_position:
                 x, y = randint(0, size), randint(0, size)
-            size = randint(1, size_planet_max)
-            planet = Planet(x, y, size)
+            occupied_position.append((x, y))
+            planet_size = randint(1, size_planet_max)
+            planet = Planet(x, y, planet_size, owner=0)
             self.planets.append(planet)
         
         # time initialization
@@ -64,7 +65,22 @@ class Universe():
         pass
 
 
+    @staticmethod
+    def compute_travel_time(planet1, planet2, travel_speed):
+        """
+        Given two planets and a speed, compute the number of turns it takes to travel between them
+        
+        travel_speed = the distance covered per turn
+        """
+        from math import ceil, sqrt
+
+        distance = sqrt((planet1.x - planet2.x)**2 + (planet1.y - planet2.y)**2)
+        travel_time = ceil(distance / travel_speed)
+
+        return travel_time
+
+
 # =================================================================================================
 if __name__ == "__main__":
-    univers = Universe()
-    univers.big_bang(size=10, nb_planets=10)
+    universe = Universe()
+    universe.big_bang(size=10, nb_planets=10)
