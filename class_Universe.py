@@ -61,6 +61,9 @@ class Universe():
         planet = Planet(size, size, size=1, owner=2, nb_ships=1, production_per_turn=planet_size/coef_production, nb_max_ships=1*coef_max_ships)
         self.planets.append(planet)
         
+        # fleets initialization
+        universe.fleets = []
+
         # time initialization
         self.time = 0
 
@@ -84,10 +87,13 @@ class Universe():
         planet.landing_ships(fleet)
         self.fleets.remove(fleet)
     
-    def take_off(self, planet, destination, speed):
+    def take_off(self, planet, destination, nb_ships, speed):
         """
-        A fleet is taking off from the planet, to an other planet (the destination).
+        A fleet is taking off from the planet, to another planet (the destination).
         """
+        fleet = Fleet(planet.owner, planet, destination, nb_ships, speed)
+        planet.take_off_ships(nb_ships)
+        self.fleets.append(fleet)
         pass
 
 
@@ -95,8 +101,6 @@ class Universe():
 if __name__ == "__main__":
     universe = Universe()
     universe.big_bang(size=10, nb_planets=10)
-    universe.fleets = []
-    universe.fleets.append(Fleet(1, universe.planets[0], universe.planets[1], 5, 2))
-    universe.planets[1].nb_ships = 0
+    universe.take_off(universe.planets[8], universe.planets[0], universe.planets[8].nb_ships, 2)
     for i in range(10):
         universe.next_turn()

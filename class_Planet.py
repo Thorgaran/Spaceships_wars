@@ -42,9 +42,9 @@ class Planet():
         Add ships from a fleet to the planet, from the owner of the planet or not
         """
         if fleet.owner == self.owner:
-            self.nb_ships += fleet.nb_of_ships
+            self.nb_ships += fleet.nb_ships
         else:  # it's an attack
-            self.nb_ships -= fleet.nb_of_ships
+            self.nb_ships -= fleet.nb_ships
             if self.nb_ships == 0:  # not conquered
                 self.owner = None
             elif self.nb_ships < 0:  # planet conquered
