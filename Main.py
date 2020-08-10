@@ -11,6 +11,6 @@ from class_Universe import *
 
 # creation of the universe
 universe = Universe()
-universe.big_bang(size=10, nb_planets=20, size_planet_max=10)
+universe.big_bang(size=10, nb_planets=20, size_planet_max=3, coef_production=1, coef_max_ships=10)
 
 # setup for the players

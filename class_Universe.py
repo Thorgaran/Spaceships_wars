@@ -25,12 +25,16 @@ class Universe():
         self.moving_fleets = moving_fleets
         self.time = time
 
-    def big_bang(self, size, nb_planets, size_planet_max=3):
+    def big_bang(self, size, nb_planets, size_planet_max=3, coef_production=1, coef_max_ships=10):
         """
         Function to initialize the universe : its planets and the time.
         The number ot planets can't exceed size²/2, otherwise an error is raised.
 
-        nb_planets = nb of planets in the universe. Must be 3, at least
+        size = size of the univers -> int
+        nb_planets = nb of planets in the universe. Must be 3, at least -> int
+        size_planet_max = size max of the planet -> int
+        coef_production = coefficient to increase each turn the number of ships on a planet -> float
+        coef_max_ships = coefficient to cap the number of ships on a planet -> float
         """
         from random import randint
 
@@ -48,13 +52,13 @@ class Universe():
                 x, y = randint(0, size), randint(0, size)
             occupied_position.append((x, y))
             planet_size = randint(1, size_planet_max)
-            planet = Planet(x, y, size=planet_size, production_per_turn=planet_size/2, nb_max_ships=planet_size*10)
+            planet = Planet(x, y, size=planet_size, production_per_turn=planet_size/coef_production, nb_max_ships=planet_size*coef_max_ships)
             self.planets.append(planet)
 
         # and the planets for the players
-        planet = Planet(0, 0, size=1, owner=1, nb_ships=1, production_per_turn=1/2, nb_max_ships=1*10)
+        planet = Planet(0, 0, size=1, owner=1, nb_ships=1, production_per_turn=planet_size/coef_production, nb_max_ships=1*coef_max_ships)
         self.planets.append(planet)
-        planet = Planet(size, size, size=1, owner=2, nb_ships=1, production_per_turn=1/2, nb_max_ships=1*10)
+        planet = Planet(size, size, size=1, owner=2, nb_ships=1, production_per_turn=planet_size/coef_production, nb_max_ships=1*coef_max_ships)
         self.planets.append(planet)
         
         # time initialization
