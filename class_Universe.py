@@ -65,9 +65,9 @@ class Universe():
         """
         A fleet is landing on the planet.
         """
-        pass
+        planet.landing_ships(fleet)
     
-    def take_off(self, planet, destination):
+    def take_off(self, planet, destination, speed):
         """
         A fleet is taking off from the planet, to an other planet (the destination).
         """
