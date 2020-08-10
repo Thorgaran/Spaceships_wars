@@ -31,11 +31,12 @@ class Planet():
         Remove ships from the planet
         """
         self.nb_ships -= nb
-        if self.nb_ships == 0:
-            self.owner = None
-        elif self.nb_ships < 0:
+        if self.nb_ships < 0:
             raise ValueError("Not enough ships for the take off !")
-        return
+         if self.nb_ships < 1:
+            self.owner = None
+            self.nb_ships = 0
+       return
     
     def landing_ships(self, fleet):
         """
@@ -45,10 +46,9 @@ class Planet():
             self.nb_ships += fleet.nb_of_ships
         else:  # it's an attack
             self.nb_ships -= fleet.nb_of_ships
-            if self.nb_ships == 0:  # not conquered
+            if self.nb_ships > -1 and self.nb_ships < 1:  # fleets annihilation
                 self.owner = None
-            elif self.nb_ships < 0:  # planet conquered
-                self.nb_ships = -self.nb_ships
+                self.nb_ships = 0
+            if self.nb_ships < -1:  # planet conquered
+                self.nb_ships = int(-self.nb_ships) + 1
                 self.owner = fleet.owner
-            else:
-                pass  # no change...
