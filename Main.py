@@ -11,6 +11,8 @@ from class_Universe import *
 from class_Player import *
 from class_GUI import *
 
+from AI_dumb import *
+
 from json import dumps, loads
 
 # nb max of turns
@@ -77,9 +79,7 @@ test_AI_input = """[
 """
 
 # beginning of the game
-counter = 0
-while (universe.winner is None) and (counter < COUNTER_MAX):
-    counter += 1
+while (universe.winner is None) and (universe.turn < COUNTER_MAX):
     # serialisation of the univers
     list_planets = [
         {
@@ -103,11 +103,13 @@ while (universe.winner is None) and (counter < COUNTER_MAX):
     ]
     data = {"planets":list_planets, "fleets":list_fleets}
     data_string = dumps(data)
+    # print(data_string)
 
     # get moves player 1 to n
     for player in universe.players:
         pass  # TODO
-        player_moves = loads(test_AI_input)  # for test purpose
+        player_moves = AI_dumb(data_string, player.color)
+        # player_moves = loads(test_AI_input)  # for test purpose
         
         if type(player_moves) != list:  # moves are not corrects => next player
             continue
@@ -153,15 +155,22 @@ while (universe.winner is None) and (counter < COUNTER_MAX):
             # the move is only emitted if it's valid
             fleet = Fleet(starting_planet.owner, starting_planet, destination_planet, nb_ships, speed=2)
 
-
-universe.take_off(
-    planet=universe.planets[0],
-    destination=universe.planets[8],
-    nb_ships=universe.planets[0].nb_ships,
-    speed=2)
-display_universe(universe)
-for i in range(10):
+    # next turn
     universe.next_turn()
-    display_universe(universe)
 
-print(f"The winner is {universe.winner.color}")
+
+# universe.take_off(
+#     planet=universe.planets[0],
+#     destination=universe.planets[8],
+#     nb_ships=universe.planets[0].nb_ships,
+#     speed=2)
+# display_universe(universe)
+# for i in range(10):
+#     universe.next_turn()
+#     display_universe(universe)
+
+print(f"End at turn {universe.turn}")
+if universe.winner is not None:
+    print(f"The winner is {universe.winner.color}")
+else:
+    print("No winner!")
