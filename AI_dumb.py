@@ -10,6 +10,7 @@ from class_Planet import *
 
 import random
 
+# -------------------------------------------------------------------------------------------------
 def move_creation(planet_f, planet_t, nb_ship):
     """
     Translation of the move in a dictionnary
@@ -66,7 +67,7 @@ def AI_dumb(state, color_AI):
         nb_ships = p.nb_ships
         list_possible_dest = []
         for dest in planets:
-            print(f"{dest.owner=}")
+            # print(f"{dest.owner=}")
             if (dest.nb_ships < nb_ships-1) and (dest.owner != color_AI):
                 # the planet can be colonized!
                 list_possible_dest.append(dest)
@@ -75,7 +76,7 @@ def AI_dumb(state, color_AI):
             my_move = move_creation(p, final_dest, nb_ships-1)
             move.append(my_move)
     move_s = dumps(move)
-    print(move_s)
+    # print(move_s)
     return(move_s)
 
 # test_AI_input = """[

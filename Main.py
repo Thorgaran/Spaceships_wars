@@ -16,10 +16,12 @@ from AI_dumb import *
 import os
 from json import dumps, loads
 from subprocess import check_output, TimeoutExpired
+import pickle
 
 # nb max of turns
 COUNTER_MAX = 100
 
+# -------------------------------------------------------------------------------------------------
 def display_universe(universe):
     gui = GUI(universe.size)
     gui.draw_universe(universe)
@@ -50,6 +52,7 @@ def display_universe(universe):
         print(f"({fleet.starting_planet.x}, {fleet.starting_planet.y}) -> ({fleet.destination_planet.x}, {fleet.destination_planet.y}): player {fleet.owner.color}, {fleet.nb_ships} ships, {fleet.turns_before_arrival} turns left")
     """
 
+# -------------------------------------------------------------------------------------------------
 def get_ai_moves(data_string):
     """
     Calls an AI program, gives it the current turn data, and retrieve a list of moves
@@ -70,6 +73,7 @@ def get_ai_moves(data_string):
     moves = ai_output.decode("utf-8")
     return moves
 
+# -------------------------------------------------------------------------------------------------
 # creation of the universe
 universe = Universe()
 universe.big_bang(size=10, nb_planets=10, size_planet_max=3, coef_production=1, coef_max_ships=20, nb_players=2)
@@ -179,3 +183,6 @@ if universe.winner is not None:
     print(f"The winner is {universe.winner.color}")
 else:
     print("No winner!")
+
+# history
+pickle.dump(universe, open('history_save', 'wb'))
