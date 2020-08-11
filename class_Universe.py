@@ -21,9 +21,14 @@ class Universe():
     - player_neutral = neutral player present at the beginning of the game -> class Player
     - nb_players = number of players -> int
     - turn = turn number (init = 0) -> int
+    - winner = the winner of the game -> None/class Player (property read only)
 
     Methods
-    - big bang -> object initialization
+    - big bang = initialization -> /
+    - next_turn = incrementation of the turn -> /
+    - landing = a fleet is landing on the planet -> /
+    - take_off = a fleet is taking off from the planet -> /
+    - nb_ships = number of ships own by a player -> int
     """
     def __init__(self, size=None, planets=None, fleets=None, players=None, player_neutral=None, turn=None):
         self.size = size
@@ -136,27 +141,36 @@ class Universe():
         """
         nb = 0
         for p in self.planets:
-            if p.owner == player:
+            if p.owner is player:
                 nb += p.nb_ships
         for f in self.fleets:
-            if f.owner == player:
+            if f.owner is player:
                 nb += f.nb_ships
         return nb
 
     @property
     def winner(self):
         """
-        Return the winner of the game, None if the game is not finished, "draw" if there are no more ships in game
+        Return the winner of the game, None if the game is not finished, the neutral player if there are no more ships in game
         """
-        nb_j1 = self.nb_ships(1)
-        nb_j2 = self.nb_ships(2)
-        if nb_j1 == 0 and nb_j2 == 0:
-            return "draw"
-        if nb_j1 == 0:
-            return 2
-        if nb_j2 == 0:
-            return 1
-        return None
+        
+        list_nb_ships = []
+        for player in self.players:
+            nb = self.nb_ships(player)
+            list_nb_ships.append(nb)
+
+        # case draw : no more ship on the map
+        if max(list_nb_ships) == 0:
+            return self.player_neutral
+
+        # case game not finished : more than one player have ships on the map
+        if len([e for e in list_nb_ships if e != 0])  > 1:
+            return None
+
+        # case winner : only one player has ship on the map
+        for i, nb in enumerate(list_nb_ships):
+            if nb > 0:
+                return self.players[i]
 
 # =================================================================================================
 if __name__ == "__main__":

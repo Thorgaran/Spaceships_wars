@@ -10,6 +10,9 @@ from class_Planet import *
 from class_Universe import *
 from class_Player import *
 
+# nb max of turns
+COUNTER_MAX = 1000
+
 def display_universe(universe):
     occupied_positions = [(planet.x, planet.y) for planet in universe.planets]
     
@@ -36,16 +39,30 @@ def display_universe(universe):
 
 # creation of the universe
 universe = Universe()
-universe.big_bang(size=10, nb_planets=10, size_planet_max=3, coef_production=1, coef_max_ships=10)
+universe.big_bang(size=10, nb_planets=10, size_planet_max=3, coef_production=1, coef_max_ships=10, nb_players=2)
 
-universe.take_off(
-    planet=universe.planets[0],
-    destination=universe.planets[8],
-    nb_ships=universe.planets[0].nb_ships,
-    speed=2)
-display_universe(universe)
-input()
-for i in range(10):
-    universe.next_turn()
-    display_universe(universe)
-    input()
+# beginning of the game
+counter = 0
+while (universe.winner is None) and (counter < COUNTER_MAX):
+    counter += 1
+    # serialisation of the univers
+    pass
+    # get moves player 1 to n
+    pass
+    # play moves
+    pass
+
+print(f"The winner is {universe.winner.color}")
+
+# universe.take_off(
+#     planet=universe.planets[0],
+#     destination=universe.planets[8],
+#     nb_ships=universe.planets[0].nb_ships,
+#     speed=2)
+# display_universe(universe)
+# input()
+# for i in range(10):
+#     universe.next_turn()
+#     display_universe(universe)
+#     print(f"{universe.winner=}")
+#     input()
