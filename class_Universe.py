@@ -7,6 +7,7 @@
 
 from class_Planet import *
 from class_Fleet import *
+from class_Player import *
 
 from random import randint
 
@@ -16,49 +17,75 @@ class Universe():
     - size = size for the square grid (from 0 to size-1) -> int
     - planets = some planets -> [class Planet]
     - fleets = some fleets -> [class Fleet]
+    - players = list of the players -> [class Player]
+    - player_neutral = neutral player present at the beginning of the game -> class Player
+    - nb_players = number of players -> int
     - turn = turn number (init = 0) -> int
 
     Methods
     - big bang -> object initialization
     """
-    def __init__(self, size=None, planets=None, fleets=None, turn=None):
+    def __init__(self, size=None, planets=None, fleets=None, players=None, player_neutral=None, turn=None):
         self.size = size
         self.planets = planets
         self.fleets = fleets
+        self.players = players
+        self.player_neutral = player_neutral
         self.turn = turn
+        self.nb_players = 0 if players is None else len(players)
 
-    def big_bang(self, size, nb_planets, size_planet_max=3, coef_production=1, coef_max_ships=10):
+    def big_bang(self, size, nb_planets, size_planet_max=3, coef_production=1, coef_max_ships=10, nb_players=2):
         """
         Function to initialize the universe : its planets and the time.
         The number ot planets can't exceed size²/2, otherwise an error is raised.
 
-        nb_planets = nb of planets in the universe. Must be 3, at least -> int
+        nb_planets = nb of planets in the universe. Must be 5, at least -> int
         size_planet_max = size max of the planet -> int
         coef_production = coefficient to increase each turn the number of ships on a planet -> float
         coef_max_ships = coefficient to cap the number of ships on a planet -> float
         """
         if nb_planets > size**2 / 2:
             raise ValueError("Too many planets!")
-        if nb_planets < 3:
+        if nb_planets < 5:
             raise ValueError("Not enough planets!")
 
-        # place the neutral planets
-        occupied_positions = [(0, 0), (size-1, size-1)]
+        # creation of the neutral player... which is not a player
+        self.player_neutral = Player()
+
+        # creation of the players, and their starting planets
+        self.nb_players = nb_players
+        self.players = []
         self.planets = []
-        for i in range(nb_planets-2):
-            x, y = 0, 0
+        occupied_positions = [(0, 0), (size-1, size-1), (0, size-1), (size-1, 0)]  # starting planets
+        for i in range(nb_players):
+            player = Player()
+            self.players.append(player)
+            planet = Planet(
+                *occupied_positions[i],
+                size=1,
+                player_neutral=self.player_neutral,
+                owner=player,
+                nb_ships=1,
+                production_per_turn=1*coef_production,
+                nb_max_ships=1*coef_max_ships)
+            self.planets.append(planet)
+
+       # place the neutral planets and the neutral player
+        for i in range(nb_planets-nb_players):
+            x, y = occupied_positions[0]
             while (x, y) in occupied_positions:
                 x, y = randint(0, size-1), randint(0, size-1)
             occupied_positions.append((x, y))
             planet_size = randint(1, size_planet_max)
-            planet = Planet(x, y, size=planet_size, production_per_turn=planet_size*coef_production, nb_max_ships=planet_size*coef_max_ships)
+            planet = Planet(
+                x, y,
+                size=planet_size,
+                player_neutral=self.player_neutral,
+                owner=self.player_neutral,
+                nb_ships=size,
+                production_per_turn=planet_size*coef_production,
+                nb_max_ships=planet_size*coef_max_ships)
             self.planets.append(planet)
-
-        # and the planets for the players
-        planet = Planet(0, 0, size=1, owner=1, nb_ships=1, production_per_turn=planet_size*coef_production, nb_max_ships=1*coef_max_ships)
-        self.planets.append(planet)
-        planet = Planet(size-1, size-1, size=1, owner=2, nb_ships=1, production_per_turn=planet_size*coef_production, nb_max_ships=1*coef_max_ships)
-        self.planets.append(planet)
         
         # fleets initialization
         self.fleets = []
@@ -101,7 +128,6 @@ class Universe():
         planet.take_off_ships(nb_ships)
         self.fleets.append(fleet)
         return
-    
 
     def nb_ships(self, player):
         """
@@ -110,10 +136,10 @@ class Universe():
         """
         nb = 0
         for p in self.planets:
-            if p.owner = player:
+            if p.owner == player:
                 nb += p.nb_ships
         for f in self.fleets:
-            if f.owner = player:
+            if f.owner == player:
                 nb += f.nb_ships
         return nb
 
