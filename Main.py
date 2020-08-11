@@ -9,8 +9,14 @@ from class_Fleet import *
 from class_Planet import *
 from class_Universe import *
 from class_Player import *
+from class_GUI import *
 
 def display_universe(universe):
+    gui = GUI(universe.size)
+    gui.draw_universe(universe)
+    gui.display_window()
+
+    """
     occupied_positions = [(planet.x, planet.y) for planet in universe.planets]
     
     # display universe grid
@@ -33,6 +39,7 @@ def display_universe(universe):
     # display fleet info
     for fleet in universe.fleets:
         print(f"({fleet.starting_planet.x}, {fleet.starting_planet.y}) -> ({fleet.destination_planet.x}, {fleet.destination_planet.y}): player {fleet.owner.color}, {fleet.nb_ships} ships, {fleet.turns_before_arrival} turns left")
+    """
 
 # creation of the universe
 universe = Universe()
@@ -44,8 +51,6 @@ universe.take_off(
     nb_ships=universe.planets[0].nb_ships,
     speed=2)
 display_universe(universe)
-input()
 for i in range(10):
     universe.next_turn()
     display_universe(universe)
-    input()
