@@ -31,6 +31,8 @@ class GUI():
         universe_size: the size of the universe, used to create the canvas
         """
         self.root = tk.Tk()
+        self.root.title("Spaceship_wars_GUI")
+        self.root.resizable(False, False)
         self.canvas = tk.Canvas(self.root, height=conv(universe_size), width=conv(universe_size), background="white")
         self.canvas.grid()
 

@@ -11,7 +11,10 @@ from class_Universe import *
 from class_Player import *
 from class_GUI import *
 
+import os
+
 from json import dumps, loads
+from subprocess import check_output, TimeoutExpired
 
 # nb max of turns
 COUNTER_MAX = 10
@@ -46,35 +49,29 @@ def display_universe(universe):
         print(f"({fleet.starting_planet.x}, {fleet.starting_planet.y}) -> ({fleet.destination_planet.x}, {fleet.destination_planet.y}): player {fleet.owner.color}, {fleet.nb_ships} ships, {fleet.turns_before_arrival} turns left")
     """
 
+def get_ai_moves(data_string):
+    """
+    Calls an AI program, gives it the current turn data, and retrieve a list of moves
+    """
+    # create a pipe to a child process 
+    data, temp = os.pipe()
+    # write to STDIN as a byte object(convert string 
+    # to bytes with encoding utf8) 
+    os.write(temp, bytes(data_string, "utf-8")); 
+    os.close(temp)
+
+    try:
+        # store output of the program as a byte string in s
+        ai_output = check_output("py draft/fake_AI.py", stdin=data, shell=True, timeout=1)
+    except TimeoutExpired:
+        return ""
+    
+    moves = ai_output.decode("utf-8")
+    return moves
+
 # creation of the universe
 universe = Universe()
 universe.big_bang(size=10, nb_planets=10, size_planet_max=3, coef_production=1, coef_max_ships=10, nb_players=2)
-
-test_AI_input = """[
-    {
-        "starting_planet": {
-        "x": 3,
-        "y": 7
-        },
-        "destination_planet": {
-        "x": 4,
-        "y": 1
-        },
-        "nb_ships": 12
-    },
-    {
-        "starting_planet": {
-        "x": 3,
-        "y": 7
-        },
-        "destination_planet": {
-        "x": 2,
-        "y": 2
-        },
-        "nb_ships": 3
-    }
-]
-"""
 
 # beginning of the game
 counter = 0
@@ -106,10 +103,10 @@ while (universe.winner is None) and (counter < COUNTER_MAX):
 
     # get moves player 1 to n
     for player in universe.players:
-        pass
+        ai_output = get_ai_moves(data_string)
         
         # play moves
-        player_moves = loads(test_AI_input)
+        player_moves = loads(ai_output)
         valid_move = True
         for move in player_moves:
             # retrieve planets, if they exist
