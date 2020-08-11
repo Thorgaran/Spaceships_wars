@@ -102,13 +102,35 @@ class Universe():
         self.fleets.append(fleet)
         return
     
+
+    def nb_ships(self, player):
+        """
+        Return the number of ships belonging to the player.
+        Ships may be on a planet or in a fleet, travelling to an other planet
+        """
+        nb = 0
+        for p in self.planets:
+            if p.owner = player:
+                nb += p.nb_ships
+        for f in self.fleets:
+            if f.owner = player:
+                nb += f.nb_ships
+        return nb
+
     @property
     def winner(self):
         """
-        Return the winner of the game, and None if the game is not finished
+        Return the winner of the game, None if the game is not finished, "draw" if there are no more ships in game
         """
-        pass
-
+        nb_j1 = self.nb_ships(1)
+        nb_j2 = self.nb_ships(2)
+        if nb_j1 == 0 and nb_j2 == 0:
+            return "draw"
+        if nb_j1 == 0:
+            return 2
+        if nb_j2 == 0:
+            return 1
+        return None
 
 # =================================================================================================
 if __name__ == "__main__":
