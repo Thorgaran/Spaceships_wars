@@ -10,7 +10,7 @@ from class_Fleet import *
 from class_Player import *
 
 from random import randint, seed
-seed("chaussette")
+seed("chaussettes")
 
 class Universe():
     """

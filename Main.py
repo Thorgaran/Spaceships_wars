@@ -18,7 +18,7 @@ from json import dumps, loads
 from subprocess import check_output, TimeoutExpired
 
 # nb max of turns
-COUNTER_MAX = 10
+COUNTER_MAX = 100
 
 def display_universe(universe):
     gui = GUI(universe.size)
@@ -72,11 +72,12 @@ def get_ai_moves(data_string):
 
 # creation of the universe
 universe = Universe()
-universe.big_bang(size=10, nb_planets=10, size_planet_max=3, coef_production=1, coef_max_ships=10, nb_players=2)
+universe.big_bang(size=10, nb_planets=10, size_planet_max=3, coef_production=1, coef_max_ships=20, nb_players=2)
 
 # beginning of the game
 while (universe.winner is None) and (universe.turn < COUNTER_MAX):
     # serialisation of the univers
+    display_universe(universe)
     list_planets = [
         {
             "x":p.x, "y":p.y,
@@ -90,8 +91,10 @@ while (universe.winner is None) and (universe.turn < COUNTER_MAX):
     ]
     list_fleets = [
         {
-            "starting":f.starting_planet,
-            "destination":f.destination_planet,
+            "starting_x":f.starting_planet.x,
+            "starting_y":f.starting_planet.y,
+            "destination_x":f.destination_planet.x,
+            "destination_y":f.destination_planet.y,
             "owner":f.owner.color,
             "nb_ships":f.nb_ships
         }
@@ -108,11 +111,15 @@ while (universe.winner is None) and (universe.turn < COUNTER_MAX):
         # player_moves = loads(test_AI_input)  # for test purpose
         # ai_output = get_ai_moves(data_string)
         
-        if type(ai_output) != list:  # moves are not corrects => next player
+        # if universe.turn > 11:
+        #     a=1
+        #     pass
+
+        player_moves = loads(ai_output)
+        if type(player_moves) != list:  # moves are not corrects => next player
             continue
 
         # play moves
-        player_moves = loads(ai_output)
         for move in player_moves:
             # retrieve planets, if they exist
             try:
@@ -151,7 +158,7 @@ while (universe.winner is None) and (universe.turn < COUNTER_MAX):
                     continue
 
             # the move is only emitted if it's valid
-            fleet = Fleet(starting_planet.owner, starting_planet, destination_planet, nb_ships, speed=2)
+            universe.take_off(starting_planet, destination_planet, nb_ships, speed=2)
 
     # next turn
     universe.next_turn()

@@ -8,6 +8,8 @@
 from json import dumps, loads
 from class_Planet import *
 
+import random
+
 def move_creation(planet_f, planet_t, nb_ship):
     """
     Translation of the move in a dictionnary
@@ -16,11 +18,11 @@ def move_creation(planet_f, planet_t, nb_ship):
     - nb_ship = number of ship -> int
     """
     move = {
-        "starting planet": {
+        "starting_planet": {
             "x":planet_f.x,
             "y":planet_f.y
         },
-        "destination planet": {
+        "destination_planet": {
             "x":planet_t.x,
             "y":planet_t.y
         },
@@ -45,7 +47,7 @@ def AI_dumb(state, color_AI):
         planet = Planet(
             x=p["x"],
             y=p["y"],
-            owner=p["owner"],
+            owner=p["owner"],  # warning : it's a color and not a player
             player_neutral=None,
             size=p["size"],
             production_per_turn=p["production_per_turn"],
@@ -62,13 +64,18 @@ def AI_dumb(state, color_AI):
     my_planets = [p for p in planets if p.owner == color_AI]
     for p in my_planets:
         nb_ships = p.nb_ships
+        list_possible_dest = []
         for dest in planets:
-            if dest.nb_ships < nb_ships-1:
+            print(f"{dest.owner=}")
+            if (dest.nb_ships < nb_ships-1) and (dest.owner != color_AI):
                 # the planet can be colonized!
-                my_move = string_creation(p, dest, nb_ships-1)
-                move.append(my_move)
-                continue
+                list_possible_dest.append(dest)
+        if list_possible_dest:
+            final_dest = random.choice(list_possible_dest)
+            my_move = move_creation(p, final_dest, nb_ships-1)
+            move.append(my_move)
     move_s = dumps(move)
+    print(move_s)
     return(move_s)
 
 # test_AI_input = """[

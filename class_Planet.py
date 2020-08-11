@@ -52,7 +52,7 @@ class Planet():
         else:  # it's an attack
             self.nb_ships -= fleet.nb_ships
             if self.nb_ships > -1 and self.nb_ships < 1:  # fleets annihilation
-                self.owner = None
+                self.owner = self.player_neutral
                 self.nb_ships = 0
             if self.nb_ships <= -1:  # planet conquered
                 self.nb_ships = int(-self.nb_ships) + 1
