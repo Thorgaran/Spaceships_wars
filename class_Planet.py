@@ -8,7 +8,9 @@
 class Planet():
     """
     - x, y = position on the grid (the space) -> int, int
-    - size = size of the planet, which define the number of neutral ships -> int
+    - size = size of the planet, which define the initial number of neutral ships -> int
+    - production_per_turn = ship increase per turn -> float
+    - nb_max_ships = max ships on the planet -> float
 
     Optional
     - owner = player owner of the planet -> None/1/2
@@ -17,10 +19,14 @@ class Planet():
     Methods
     - take_off_ships
     - landing_ships
+    - next_turn
     """
     def __init__(self, x, y, size, production_per_turn, nb_max_ships, owner=None, nb_ships=None):
         self.x, self.y = x, y
         self.owner = owner
+        self.size = size
+        self.production_per_turn = production_per_turn
+        self.nb_max_ships = nb_max_ships
         if owner is None:  # neutral planet
             self.nb_ships = size
         else:
@@ -52,3 +58,14 @@ class Planet():
             if self.nb_ships <= -1:  # planet conquered
                 self.nb_ships = int(-self.nb_ships) + 1
                 self.owner = fleet.owner
+        return
+
+    def next_turn(self):
+        """
+        Prepare the next turn
+        """
+        if self.owner is not None:
+            self.nb_ships += self.production_per_turn
+        if self.nb_ships > self.nb_max_ships:
+            self.nb_ships = int(self.nb_max_ships)
+        return

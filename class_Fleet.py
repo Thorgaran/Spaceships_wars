@@ -7,11 +7,14 @@
 
 class Fleet():
     """
-    - self.owner = the player who owns this fleet -> None/1/2
-    - self.starting_planet = the planet the fleet departed from -> class Planet
-    - sef.destination_planet = the planet the fleet is headed to -> class Planet
-    - self.nb_ships = the number of ships composing the fleet -> int
-    - self.turns_before_arrival = the number of turns left to travel -> int
+    - owner = the player who owns this fleet -> None/1/2
+    - starting_planet = the planet the fleet departed from -> class Planet
+    - destination_planet = the planet the fleet is headed to -> class Planet
+    - nb_ships = the number of ships composing the fleet -> int
+    - turns_before_arrival = the number of turns left to travel -> int
+
+    Methods
+    - next_turn
     """
     def __init__(self, owner, starting_planet, destination_planet, nb_ships, speed):
         """
@@ -42,3 +45,4 @@ class Fleet():
         Prepare the next turn
         """
         self.turns_before_arrival -= 1
+        return

@@ -9,7 +9,7 @@ from class_Fleet import *
 from class_Planet import *
 from class_Universe import *
 
-def displayUniverse(universe):
+def display_universe(universe):
     occupied_positions = [(planet.x, planet.y) for planet in universe.planets]
     
     # display universe grid
@@ -42,9 +42,9 @@ universe.take_off(
     destination=universe.planets[0],
     nb_ships=universe.planets[8].nb_ships,
     speed=2)
-displayUniverse(universe)
+display_universe(universe)
 input()
 for i in range(10):
     universe.next_turn()
-    displayUniverse(universe)
+    display_universe(universe)
     input()
