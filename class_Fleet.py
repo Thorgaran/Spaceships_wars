@@ -5,12 +5,15 @@
 #  
 #  
 
+from math import ceil, dist
+
 class Fleet():
     """
     - owner = the player who owns this fleet -> class Player
     - starting_planet = the planet the fleet departed from -> class Planet
     - destination_planet = the planet the fleet is headed to -> class Planet
     - nb_ships = the number of ships composing the fleet -> int
+    - total_travel_turns = the total number of turns needed to complete the trip -> int
     - turns_before_arrival = the number of turns left to travel -> int
 
     Methods
@@ -24,7 +27,7 @@ class Fleet():
         self.starting_planet = starting_planet
         self.destination_planet = destination_planet
         self.nb_ships = nb_ships
-        self.turns_before_arrival = self.compute_travel_time(starting_planet, destination_planet, speed)
+        self.total_travel_turns = self.turns_before_arrival = self.compute_travel_time(starting_planet, destination_planet, speed)
 
     @staticmethod
     def compute_travel_time(planet1, planet2, travel_speed):
@@ -33,10 +36,7 @@ class Fleet():
         
         travel_speed = the distance covered per turn
         """
-        from math import ceil, sqrt
-
-        distance = sqrt((planet1.x - planet2.x)**2 + (planet1.y - planet2.y)**2)
-        travel_time = ceil(distance / travel_speed)
+        travel_time = ceil(dist((planet1.x, planet1.y), (planet2.x, planet2.y)) / travel_speed)
 
         return travel_time
 
