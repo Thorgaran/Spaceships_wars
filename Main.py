@@ -126,7 +126,7 @@ while (universe.winner is None) and (counter < COUNTER_MAX):
                 s_planet_pos_y = int(starting_planet_pos["y"])
                 d_planet_pos_x = int(destination_planet_pos["x"])
                 d_planet_pos_y = int(destination_planet_pos["y"])
-            except ValueError, KeyError:
+            except (ValueError, KeyError):
                 continue
 
             starting_planet = destination_planet = None
