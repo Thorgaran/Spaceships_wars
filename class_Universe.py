@@ -9,7 +9,8 @@ from class_Planet import *
 from class_Fleet import *
 from class_Player import *
 
-from random import randint
+from random import randint, seed
+seed("chaussette")
 
 class Universe():
     """
