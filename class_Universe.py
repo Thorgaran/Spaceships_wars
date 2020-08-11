@@ -88,7 +88,7 @@ class Universe():
                 size=planet_size,
                 player_neutral=self.player_neutral,
                 owner=self.player_neutral,
-                nb_ships=size,
+                nb_ships=planet_size,
                 production_per_turn=planet_size*coef_production,
                 nb_max_ships=planet_size*coef_max_ships)
             self.planets.append(planet)
@@ -112,10 +112,13 @@ class Universe():
         for planet in self.planets:
             planet.next_turn()
 
+        fleets_to_remove = []
         for fleet in self.fleets:
             fleet.next_turn()
             if fleet.turns_before_arrival == 0:
                 self.landing(fleet, fleet.destination_planet)
+                fleets_to_remove.append(fleet)
+        self.fleets = [f for f in self.fleets if f not in fleets_to_remove]
         return
     
     def landing(self, fleet, planet):
@@ -123,7 +126,6 @@ class Universe():
         A fleet is landing on the planet.
         """
         planet.landing_ships(fleet)
-        self.fleets.remove(fleet)
         return
     
     def take_off(self, planet, destination, nb_ships, speed):

@@ -73,7 +73,7 @@ class GUI():
             fill=fleet.owner.color)
         
         # draw the fleet itself
-        compute_pos = lambda x1,x2: conv(x2) + (((conv(x1) - conv(x2))/(fleet.total_travel_turns+1))*fleet.turns_before_arrival)
+        compute_pos = lambda x1,x2: conv(x2) + (((conv(x1) - conv(x2))/(fleet.total_travel_turns))*fleet.turns_before_arrival)
         fleet_pos_x = compute_pos(fleet.starting_planet.x, fleet.destination_planet.x)
         fleet_pos_y = compute_pos(fleet.starting_planet.y, fleet.destination_planet.y)
         
