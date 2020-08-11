@@ -110,10 +110,10 @@ class Universe():
         """
         nb = 0
         for p in self.planets:
-            if p.owner = player:
+            if p.owner == player:
                 nb += p.nb_ships
         for f in self.fleets:
-            if f.owner = player:
+            if f.owner == player:
                 nb += f.nb_ships
         return nb
 
