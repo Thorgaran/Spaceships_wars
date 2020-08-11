@@ -17,6 +17,7 @@ import os
 from json import dumps, loads
 from subprocess import check_output, TimeoutExpired
 import pickle
+import copy
 
 # nb max of turns
 COUNTER_MAX = 100
@@ -78,10 +79,13 @@ def get_ai_moves(data_string):
 universe = Universe()
 universe.big_bang(size=10, nb_planets=10, size_planet_max=3, coef_production=1, coef_max_ships=20, nb_players=2)
 
+# timeline
+timeline = [copy.deepcopy(universe)]
+
 # beginning of the game
 while (universe.winner is None) and (universe.turn < COUNTER_MAX):
     # serialisation of the univers
-    display_universe(universe)
+    # display_universe(universe)
     list_planets = [
         {
             "x":p.x, "y":p.y,
@@ -166,6 +170,7 @@ while (universe.winner is None) and (universe.turn < COUNTER_MAX):
 
     # next turn
     universe.next_turn()
+    timeline.append(copy.deepcopy(universe))
 
 
 # universe.take_off(
@@ -185,4 +190,4 @@ else:
     print("No winner!")
 
 # history
-pickle.dump(universe, open('history_save', 'wb'))
+pickle.dump(timeline, open('history_save', 'wb'))

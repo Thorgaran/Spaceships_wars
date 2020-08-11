@@ -1,5 +1,6 @@
 import tkinter as tk
 from math import dist
+import pickle
 
 from class_Fleet import *
 from class_Planet import *
@@ -24,11 +25,14 @@ class GUI():
     - root = the main GUI window -> class Tk
     - canvas = the canvas inside the root -> class Canvas
 
+    Optional
+    - timeline = a list of Universe from a game -> [class Universe]
+
     Methods
     - /
     """
 
-    def __init__(self, universe_size):
+    def __init__(self, universe_size, timeline=[]):
         """
         universe_size: the size of the universe, used to create the canvas
         """
@@ -36,7 +40,9 @@ class GUI():
         self.root.title("Spaceship_wars_GUI")
         self.root.resizable(False, False)
         self.canvas = tk.Canvas(self.root, height=conv(universe_size), width=conv(universe_size), background="white")
-        self.canvas.grid()
+        self.canvas.grid(column=0, row=1)
+
+        self.timeline = timeline
 
     def clear_canvas(self):
         self.canvas.delete("all")
@@ -45,6 +51,16 @@ class GUI():
     def display_window(self):
         self.root.mainloop()
         return
+
+    def add_timeline_nav(self, timeline_length):
+        scale = tk.Scale(self.root, orient='h', length=self.canvas.cget('width'),
+            from_=0, to=timeline_length-1, tickinterval=5, showvalue=True, label='Turns',
+            command=self.turn_update)
+        scale.grid(column=0, row=0)
+
+    def turn_update(self, turn_s):
+        self.clear_canvas()
+        self.draw_universe(self.timeline[int(turn_s)])
 
     def draw_universe(self, universe):
         """
@@ -92,27 +108,10 @@ class GUI():
         self.canvas.create_text(fleet_pos_x, fleet_pos_y-20, text=str(fleet.nb_ships), fill=fleet.owner.color)
         return
 
-"""
-player_neutral = Player()
-player1 = Player()
-player2 = Player()
-
-planet1 = Planet(x=1, y=2, size=10, production_per_turn=2, nb_max_ships=20, player_neutral=player_neutral, owner=player1, nb_ships=6)
-draw_planet(canvas, planet1)
-
-planet2 = Planet(x=9, y=9, size=10, production_per_turn=1, nb_max_ships=20, player_neutral=player_neutral, owner=player2, nb_ships=6)
-draw_planet(canvas, planet2)
-
-planet3 = Planet(x=3, y=5, size=10, production_per_turn=3, nb_max_ships=20, player_neutral=player_neutral, owner=player_neutral, nb_ships=15)
-draw_planet(canvas, planet3)
-
-planet4 = Planet(x=3, y=4, size=10, production_per_turn=3, nb_max_ships=20, player_neutral=player_neutral, owner=player1, nb_ships=15)
-draw_planet(canvas, planet4)
-
-fleet1 = Fleet(planet4.owner, planet4, planet2, 10, 2)
-draw_fleet(canvas, fleet1)
-
-fleet2 = Fleet(planet2.owner, planet2, planet1, 7, 2)
-fleet2.turns_before_arrival -= 5
-draw_fleet(canvas, fleet2)
-"""
+# =================================================================================================
+if __name__ == "__main__":
+    timeline = pickle.load(open('history_save', 'rb'))
+    gui = GUI(timeline[0].size, timeline)
+    gui.add_timeline_nav(len(timeline))
+    gui.draw_universe(timeline[0])
+    gui.display_window()
