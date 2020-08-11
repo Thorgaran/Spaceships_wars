@@ -106,42 +106,53 @@ while (universe.winner is None) and (counter < COUNTER_MAX):
 
     # get moves player 1 to n
     for player in universe.players:
-        pass
+        pass  # TODO
+        player_moves = loads(test_AI_input)  # for test purpose
         
+        if type(player_moves) != list:  # moves are not corrects => next player
+            continue
+
         # play moves
-        player_moves = loads(test_AI_input)
-        valid_move = True
         for move in player_moves:
             # retrieve planets, if they exist
-            starting_planet_pos = move["starting_planet"]
-            destination_planet_pos = move["destination_planet"]
+            try:
+                starting_planet_pos = move["starting_planet"]
+                destination_planet_pos = move["destination_planet"]
+            except KeyError:
+                continue
             
+            try:
+                s_planet_pos_x = int(starting_planet_pos["x"])
+                s_planet_pos_y = int(starting_planet_pos["y"])
+                d_planet_pos_x = int(destination_planet_pos["x"])
+                d_planet_pos_y = int(destination_planet_pos["y"])
+            except ValueError, KeyError:
+                continue
+
             starting_planet = destination_planet = None
             for planet in universe.planets:
-                if (starting_planet_pos["x"] == planet.x) and (starting_planet_pos["y"] == planet.y):
+                if (s_planet_pos_x == planet.x) and (s_planet_pos_y == planet.y):
                     starting_planet = planet
-                if (destination_planet_pos["x"] == planet.x) and (destination_planet_pos["y"] == planet.y):
+                if (d_planet_pos_x == planet.x) and (d_planet_pos_y == planet.y):
                     destination_planet = planet
             
             if starting_planet is None or destination_planet is None:
-                valid_move = False
+                continue
             elif starting_planet is destination_planet:
-                valid_move = False
+                continue
             else:
                 # check that the starting planet owner is the move emitter
-                if starting_planet.owner != player:
-                    valid_move = False
+                if starting_planet.owner is not player:
+                    continue
 
-            # retrieve the number of ships
-            nb_ships = move["nb_ships"]
-            if nb_ships > starting_planet.nb_ships:
-                valid_move = False
+                # retrieve the number of ships
+                nb_ships = move["nb_ships"]
+                if nb_ships > starting_planet.nb_ships:
+                    continue
 
-            if valid_move:  # the move is only emitted if it's valid
-                fleet = Fleet(starting_planet.owner, starting_planet, destination_planet, nb_ships, speed=2)
-            else:
-                pass
-    pass
+            # the move is only emitted if it's valid
+            fleet = Fleet(starting_planet.owner, starting_planet, destination_planet, nb_ships, speed=2)
+
 
 universe.take_off(
     planet=universe.planets[0],
