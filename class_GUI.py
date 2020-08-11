@@ -6,6 +6,7 @@ from class_Planet import *
 from class_Universe import *
 from class_Player import *
 
+# -------------------------------------------------------------------------------------------------
 def _create_circle(self, x, y, r, **kwargs):
     """
     Adds a create_circle method to the Canvas object, more convenient than the create_oval one
@@ -16,6 +17,7 @@ tk.Canvas.create_circle = _create_circle
 # convert from Universe coordinates to Canvas coordinates
 conv = lambda x: (x+1)*80
 
+# -------------------------------------------------------------------------------------------------
 class GUI():
     """
     Graphical User Interface

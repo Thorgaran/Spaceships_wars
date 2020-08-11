@@ -30,6 +30,17 @@ class Universe():
     - landing = a fleet is landing on the planet -> /
     - take_off = a fleet is taking off from the planet -> /
     - nb_ships = number of ships own by a player -> int
+
+    Each turn is saved in a self._history object with a dictionary for the players and a dictionary for each turn (0, 1...)
+        {
+            "players":self.players,
+            0:{
+                "planets":self.planets,
+                "fleets":self.fleets
+            },
+            1:{...},
+            ...
+        }
     """
     def __init__(self, size=None, planets=None, fleets=None, players=None, player_neutral=None, turn=None):
         self.size = size
@@ -101,6 +112,15 @@ class Universe():
 
         # turn initialization
         self.turn = 0
+
+        # history initialization
+        self._history = {
+            "players":self.players,
+            self.turn:{
+                "planets":self.planets,
+                "fleets":self.fleets
+            }
+        }
         return
 
     def next_turn(self):
@@ -116,6 +136,12 @@ class Universe():
             fleet.next_turn()
             if fleet.turns_before_arrival == 0:
                 self.landing(fleet, fleet.destination_planet)
+
+        # history
+        self._history[self.turn] = {
+            "planets":self.planets,
+            "fleets":self.fleets
+        }
         return
     
     def landing(self, fleet, planet):
