@@ -11,9 +11,10 @@ class Planet():
     - size = size of the planet, which define the initial number of neutral ships -> int
     - production_per_turn = ship increase per turn -> float
     - nb_max_ships = max ships on the planet -> float
+    - player_neutral = the neutral player, if the planet has no more ship -> class Player
 
     Optional
-    - owner = player owner of the planet -> None/1/2
+    - owner = player owner of the planet -> class Player
     - nb_ships = number of ships belonging to the owner -> int
 
     Methods
@@ -21,16 +22,14 @@ class Planet():
     - landing_ships
     - next_turn
     """
-    def __init__(self, x, y, size, production_per_turn, nb_max_ships, owner=None, nb_ships=None):
+    def __init__(self, x, y, size, production_per_turn, nb_max_ships, player_neutral, owner=None, nb_ships=0):
         self.x, self.y = x, y
-        self.owner = owner
+        self.owner = player_neutral if owner is None else owner
+        self.player_neutral = player_neutral
         self.size = size
         self.production_per_turn = production_per_turn
         self.nb_max_ships = nb_max_ships
-        if owner is None:  # neutral planet
-            self.nb_ships = size
-        else:
-            self.nb_ships = nb_ships
+        self.nb_ships = nb_ships
 
     def take_off_ships(self, nb):
         """
@@ -40,7 +39,7 @@ class Planet():
         if self.nb_ships < 0:
             raise ValueError("Not enough ships for the take off !")
         if self.nb_ships < 1:
-            self.owner = None
+            self.owner = self.player_neutral
             self.nb_ships = 0
         return
     
@@ -64,7 +63,7 @@ class Planet():
         """
         Prepare the next turn
         """
-        if self.owner is not None:
+        if self.owner is not self.player_neutral:
             self.nb_ships += self.production_per_turn
         if self.nb_ships > self.nb_max_ships:
             self.nb_ships = int(self.nb_max_ships)

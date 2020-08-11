@@ -9,7 +9,7 @@ from math import ceil, dist
 
 class Fleet():
     """
-    - owner = the player who owns this fleet -> None/1/2
+    - owner = the player who owns this fleet -> class Player
     - starting_planet = the planet the fleet departed from -> class Planet
     - destination_planet = the planet the fleet is headed to -> class Planet
     - nb_ships = the number of ships composing the fleet -> int
