@@ -10,7 +10,6 @@ from class_Fleet import *
 from class_Player import *
 
 from random import randint, seed
-# seed("chaussettes")
 
 class Universe():
     """
@@ -32,6 +31,7 @@ class Universe():
     - nb_ships = number of ships owned by a player -> int
     - nb_ships_in_fleets = number of ships owned by a player, in fleets -> int
     - nb_ships_on_planets = number of ships owned by a player, on planets -> int
+    - inverse_players = reattribute the starting planets, using new_list -> /
     """
     def __init__(self, size=None, planets=None, fleets=None, players=None, player_neutral=None, turn=None):
         self.size = size
@@ -189,6 +189,21 @@ class Universe():
         for i, nb in enumerate(list_nb_ships):
             if nb > 0:
                 return self.players[i]
+
+    def inverse_players(self, new_list):
+        """
+        This function reattribute the starting planets, using new_list
+        The player new_list[0] will be on the planet of the actual first player, and so on
+
+        new_list = list of players -> [class Players]
+        """
+        old_list = self.players
+        array = list(zip(old_list, new_list))
+        dico = {old:new for (old, new) in array}
+        for planet in self.planets:
+            if planet.owner in dico.keys():
+                planet.owner = dico[planet.owner]
+        return
 
 # =================================================================================================
 if __name__ == "__main__":

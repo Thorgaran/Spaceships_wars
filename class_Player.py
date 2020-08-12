@@ -8,23 +8,18 @@
 class Player():
     """
     Player of the game.
-    The player number 0 is the neutral one : color "gray"
     - color = color of the player on the screen -> str
     - ai = artificial intelligence of the player -> function
+    - name = name of the ai -> str
 
     Methods
     - /
     """
-    _color_list = ["gray", "blue", "red", "green", "yellow"]
-    _counter = 0
 
-    def __init__(self, ai):
-        # print(f"{Player._counter=}")
-        if Player._counter >= len(Player._color_list):
-            raise IndexError("Too many players!")
-        self.color = self._color_list[Player._counter]
+    def __init__(self, ai, name, color):
+        self.color = color
         self.ai = ai
-        Player._counter += 1
+        self.name = name
 
 # =================================================================================================
 if __name__ == "__main__":
