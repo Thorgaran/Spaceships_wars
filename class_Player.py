@@ -15,7 +15,7 @@ class Player():
     Methods
     - /
     """
-    _color_list = ["gray", "blue", "red", "green", "yellow"]
+    _color_list = ["gray", "blue", "red", "green2", "gold"]
     _counter = 0
 
     def __init__(self, ai):

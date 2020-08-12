@@ -19,12 +19,15 @@ tk.Canvas.create_circle = _create_circle
 # convert from Universe coordinates to Canvas coordinates
 conv = lambda x: (x+1)*80
 
+TOTAL_SHIPS_LINE_WIDTH = 16
+
 # -------------------------------------------------------------------------------------------------
 class GUI():
     """
     Graphical User Interface
     - root = the main GUI window -> class Tk
     - canvas = the canvas inside the root -> class Canvas
+    - game_info = a canvas used to display more info about the current universe -> class Canvas
     - scale_ratio = the ratio used to rescale the canvas -> float
 
     Optional
@@ -46,7 +49,7 @@ class GUI():
         title_bar_height = 30
         self.root.geometry(f'{screen_smaller_dim-title_bar_height}x{screen_smaller_dim-title_bar_height}')
         
-        # configure grid to stretch horizontally
+        # configure root grid to stretch
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(1, weight=1)
 
@@ -57,16 +60,28 @@ class GUI():
             from_=0, to=len(self.timeline)-1, tickinterval=5, showvalue=True, command=self.turn_update)
             scale.grid(column=0, row=0, sticky='we')
 
+        # create canvas frame
+        canvas_frame = tk.Frame(self.root)
+        canvas_frame.grid(column=0, row=1, pady=(0, 10), sticky='nsew')
+
+        # configure root grid to stretch
+        canvas_frame.columnconfigure(1, weight=1)
+
+        # add game info
+        self.game_info = tk.Canvas(canvas_frame, background="white", width=4*TOTAL_SHIPS_LINE_WIDTH)
+        self.game_info.grid(column=0, row=0, sticky='ns')
+
         # add canvas
-        self.canvas = tk.Canvas(self.root, background="white")
-        self.canvas.grid(column=0, row=1, pady=(0, 20), sticky='ns')
+        self.canvas = tk.Canvas(canvas_frame, background="white")
+        self.canvas.grid(column=1, row=0, sticky='we')
         self.root.update()
-        self.canvas.config(width=self.canvas.winfo_height())
+        self.canvas.config(height=self.canvas.winfo_width())
 
         # compute the scale ratio
-        self.scale_ratio = self.canvas.winfo_height() / conv(universe_size)
+        self.scale_ratio = self.canvas.winfo_width() / conv(universe_size)
 
-    def clear_canvas(self):
+    def clear_canvases(self):
+        self.game_info.delete("all")
         self.canvas.delete("all")
         return
 
@@ -75,7 +90,7 @@ class GUI():
         return
 
     def turn_update(self, turn_s):
-        self.clear_canvas()
+        self.clear_canvases()
         self.draw_universe(self.timeline[int(turn_s)])
 
     def draw_universe(self, universe):
@@ -87,9 +102,11 @@ class GUI():
 
         for fleet in universe.fleets:
             self.draw_fleet(fleet)
-        
+
         # rescale the Canvas
         self.canvas.scale("all", 0, 0, self.scale_ratio, self.scale_ratio)
+        
+        self.draw_players_total_ships(universe)
         return
 
     def draw_planet(self, planet):
@@ -126,6 +143,36 @@ class GUI():
         # draw the number of ships
         self.canvas.create_text(fleet_pos_x, fleet_pos_y-20, text=str(fleet.nb_ships), fill=fleet.owner.color)
         return
+
+    def draw_players_total_ships(self, universe):
+        # get and store ship counts
+        ship_counts = []
+        total_ship_count = 0
+        for player in universe.players:
+            nb_ships_on_planets = universe.nb_ships_on_planets(player)
+            nb_ships_in_fleets = universe.nb_ships_in_fleets(player)
+            
+            ship_counts.append((nb_ships_on_planets, nb_ships_in_fleets))
+            total_ship_count += nb_ships_on_planets + nb_ships_in_fleets
+
+        dark_colors = {}
+        dark_colors["blue"] = "blue3"
+        dark_colors["red"] = "red3"
+        dark_colors["green2"] = "green3"
+        dark_colors["gold"] = "gold3"
+
+        line_length = lambda x: (x/total_ship_count)*self.game_info.winfo_height()
+
+        width = TOTAL_SHIPS_LINE_WIDTH
+        for i, player in enumerate(universe.players, 0):
+            pos_x = width*(i+0.5) + 0.5*((width+1)%2) + 1.5
+            mid_y = line_length(ship_counts[i][0])
+            end_y = mid_y + line_length(ship_counts[i][1])
+            
+            self.game_info.create_line(pos_x, 0, pos_x, mid_y, width=width, fill=dark_colors[player.color])
+            self.game_info.create_line(pos_x, mid_y, pos_x, end_y, width=width, fill=player.color)
+            text = f"{ship_counts[i][0]} | {ship_counts[i][1]}"
+            self.game_info.create_text(pos_x, end_y + 5, anchor='e', angle=90, text=text, fill=player.color)
 
 # =================================================================================================
 if __name__ == "__main__":

@@ -45,13 +45,15 @@ def display_universe(universe):
 
 # number of game
 # not the best => TODO
-number_of_games = 10
+number_of_games = 1
 
 # -------------------------------------------------------------------------------------------------
 # creation of the neutral player... which is not a player
 player_neutral = Player(ai=None)
 # creation of the players
 players = [
+    Player(ai=AI_dumb),
+    Player(ai=AI_dumb),
     Player(ai=AI_dumb),
     Player(ai=AI_dumb)
 ]
@@ -62,8 +64,8 @@ for game_number in range(number_of_games):
     # creation of the universe
     universe = Universe()
     universe.big_bang(
-        size=10,
-        nb_planets=10,
+        size=20,
+        nb_planets=20,
         size_planet_max=3,
         list_players=players,
         player_neutral=player_neutral,
