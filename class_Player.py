@@ -24,5 +24,5 @@ class Player():
 # =================================================================================================
 if __name__ == "__main__":
     for i in range(5):
-        p = Player(ai=None)
+        p = Player(ai=None, name="bill", color="black")
         print(p.color)

@@ -31,7 +31,7 @@ class Universe():
     - nb_ships = number of ships owned by a player -> int
     - nb_ships_in_fleets = number of ships owned by a player, in fleets -> int
     - nb_ships_on_planets = number of ships owned by a player, on planets -> int
-    - inverse_players = reattribute the starting planets, using new_list -> /
+    - change_players = reattribute the starting planets, using new_list -> /
     """
     def __init__(self, size=None, planets=None, fleets=None, players=None, player_neutral=None, turn=None):
         self.size = size
@@ -190,7 +190,7 @@ class Universe():
             if nb > 0:
                 return self.players[i]
 
-    def inverse_players(self, new_list):
+    def change_players(self, new_list):
         """
         This function reattribute the starting planets, using new_list
         The player new_list[0] will be on the planet of the actual first player, and so on
@@ -203,6 +203,7 @@ class Universe():
         for planet in self.planets:
             if planet.owner in dico.keys():
                 planet.owner = dico[planet.owner]
+        self.players = new_list
         return
 
 # =================================================================================================
