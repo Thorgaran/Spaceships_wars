@@ -62,8 +62,10 @@ flag_fair = True
 player_neutral = Player(ai=None, name="neutral", color=COLOR_PLAYER_LIGHT[0])
 # creation of the players
 players = [
-    Player(ai=AI_dumb, name="AI_dumb1", color=COLOR_PLAYER_LIGHT[1]),
-    Player(ai=AI_dumb, name="AI_dumb2", color=COLOR_PLAYER_LIGHT[2])
+    Player(ai=AI_dumb, name="AI_1", color=COLOR_PLAYER_LIGHT[1]),
+    Player(ai=AI_dumb, name="AI_2", color=COLOR_PLAYER_LIGHT[2]),
+    Player(ai=AI_dumb, name="AI_3", color=COLOR_PLAYER_LIGHT[3]),
+    Player(ai=AI_dumb, name="AI_4", color=COLOR_PLAYER_LIGHT[4])
 ]
 
 results_glob = {}
@@ -85,26 +87,17 @@ for game_number in range(number_of_univers):
                 coef_max_ships=COEF_MAX_SHIP
             )
             universe0 = deepcopy(universe)  # if we need to reuse it
-            # print(f"{universe0.winner=}")
             players0 = deepcopy(players)
             flag_first = False
             print(f"=== Universe number {game_number} ===")
-            # print(f"=> 1er tour  {list_players=}")
-            # display_universe(universe)
         else:
             # the universe is already created
             # the position of the players need to be changed
             universe = deepcopy(universe0)
-            # print(f"  before inverse_players {universe.winner=}")
-            universe.inverse_players(list_players)
-            # print(f"  after  inverse_players {universe.winner=}")
-            # print(f"=> 2ème tour {list_players=}")
-            # display_universe(universe)
+            universe.change_players(list_players)
 
-        # print(f"{universe.winner=}")
         timeline = game(universe, nb_max_turn=COUNTER_MAX)  # play the game
         final = timeline[-1]
-        # display_universe(final)
 
         result = {"turn":universe.turn}
         if final.winner is not None:
