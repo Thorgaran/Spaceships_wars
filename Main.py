@@ -10,6 +10,7 @@ from class_Planet import *
 from class_Universe import *
 from class_Player import *
 from class_GUI import *
+from const import *
 
 from AI_dumb import *
 
@@ -18,10 +19,6 @@ from json import dumps, loads
 from subprocess import check_output, TimeoutExpired
 import pickle
 import copy
-
-# nb max of turns
-COUNTER_MAX = 100
-HISTORY_FILE = "history_save"
 
 # -------------------------------------------------------------------------------------------------
 def display_universe(universe):
@@ -78,7 +75,7 @@ def get_ai_moves(data_string):
 # -------------------------------------------------------------------------------------------------
 # creation of the universe
 universe = Universe()
-universe.big_bang(size=10, nb_planets=10, size_planet_max=3, coef_production=1, coef_max_ships=20, nb_players=2)
+universe.big_bang(size=10, nb_planets=10, size_planet_max=3, nb_players=3)
 
 # timeline
 timeline = [copy.deepcopy(universe)]
@@ -191,4 +188,4 @@ else:
     print("No winner!")
 
 # history
-pickle.dump(timeline, open('history_save', 'wb'))
+pickle.dump(timeline, open(HISTORY_FILE, 'wb'))

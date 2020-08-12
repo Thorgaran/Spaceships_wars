@@ -8,6 +8,7 @@
 from class_Planet import *
 from class_Fleet import *
 from class_Player import *
+from const import *
 
 from random import randint, seed
 # seed("chaussettes")
@@ -40,7 +41,7 @@ class Universe():
         self.turn = turn
         self.nb_players = 0 if players is None else len(players)
 
-    def big_bang(self, size, nb_planets, size_planet_max=3, coef_production=1, coef_max_ships=10, nb_players=2):
+    def big_bang(self, size, nb_planets, size_planet_max=3, nb_players=2):
         """
         Function to initialize the universe : its planets and the time.
         The number ot planets can't exceed size²/2, otherwise an error is raised.
@@ -50,6 +51,9 @@ class Universe():
         coef_production = coefficient to increase each turn the number of ships on a planet -> float
         coef_max_ships = coefficient to cap the number of ships on a planet -> float
         """
+        coef_production=COEF_PRODUCTION
+        coef_max_ships=COEF_MAX_SHIP
+
         if nb_planets > size**2 / 2:
             raise ValueError("Too many planets!")
         if nb_planets < 5:
