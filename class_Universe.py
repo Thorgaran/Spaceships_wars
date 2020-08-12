@@ -8,7 +8,6 @@
 from class_Planet import *
 from class_Fleet import *
 from class_Player import *
-from const import *
 
 from random import randint, seed
 # seed("chaussettes")
@@ -194,4 +193,4 @@ class Universe():
 # =================================================================================================
 if __name__ == "__main__":
     universe = Universe()
-    universe.big_bang(size=10, nb_planets=10)
+    # universe.big_bang(size=10, nb_planets=10)
