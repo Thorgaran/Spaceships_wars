@@ -41,39 +41,34 @@ class Universe():
         self.turn = turn
         self.nb_players = 0 if players is None else len(players)
 
-    def big_bang(self, size, nb_planets, size_planet_max=3, nb_players=2):
+    def big_bang(self, size, nb_planets, list_players, player_neutral, coef_production, coef_max_ships, size_planet_max=3):
         """
         Function to initialize the universe : its planets and the time.
         The number ot planets can't exceed size²/2, otherwise an error is raised.
 
         nb_planets = nb of planets in the universe. Must be 5, at least -> int
         size_planet_max = size max of the planet -> int
+        list_players = players of the game -> [class Player]
+
         coef_production = coefficient to increase each turn the number of ships on a planet -> float
         coef_max_ships = coefficient to cap the number of ships on a planet -> float
         """
-        coef_production=COEF_PRODUCTION
-        coef_max_ships=COEF_MAX_SHIP
-
         if nb_planets > size**2 / 2:
             raise ValueError("Too many planets!")
         if nb_planets < 5:
             raise ValueError("Not enough planets!")
 
-        # creation of the neutral player... which is not a player
-        self.player_neutral = Player()
-
-        # creation of the players, and their starting planets
-        self.nb_players = nb_players
-        self.players = []
+        # players, creation of their starting planets
+        self.nb_players = len(list_players)
+        self.players = list_players
+        self.player_neutral = player_neutral
         self.planets = set()
         occupied_positions = [(0, 0), (size-1, size-1), (0, size-1), (size-1, 0)]  # starting planets
-        for i in range(nb_players):
-            player = Player()
-            self.players.append(player)
+        for i, player in enumerate(list_players):
             planet = Planet(
                 *occupied_positions[i],
                 size=1,
-                player_neutral=self.player_neutral,
+                player_neutral=player_neutral,
                 owner=player,
                 nb_ships=1,
                 production_per_turn=1*coef_production,
@@ -81,7 +76,7 @@ class Universe():
             self.planets.add(planet)
 
        # place the neutral planets and the neutral player
-        for i in range(nb_planets-nb_players):
+        for i in range(nb_planets-self.nb_players):
             x, y = occupied_positions[0]
             while (x, y) in occupied_positions:
                 x, y = randint(0, size-1), randint(0, size-1)
