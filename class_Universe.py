@@ -30,7 +30,9 @@ class Universe():
     - next_turn = incrementation of the turn -> /
     - landing = a fleet is landing on the planet -> /
     - take_off = a fleet is taking off from the planet -> /
-    - nb_ships = number of ships own by a player -> int
+    - nb_ships = number of ships owned by a player -> int
+    - nb_ships_in_fleets = number of ships owned by a player, in fleets -> int
+    - nb_ships_on_planets = number of ships owned by a player, on planets -> int
     """
     def __init__(self, size=None, planets=None, fleets=None, players=None, player_neutral=None, turn=None):
         self.size = size
@@ -143,13 +145,26 @@ class Universe():
         Return the number of ships belonging to the player.
         Ships may be on a planet or in a fleet, travelling to an other planet
         """
+        return self.nb_ships_in_fleets(player) + self.nb_ships_on_planets(player)
+
+    def nb_ships_in_fleets(self, player):
+        """
+        Return the number of ships belonging to the player, in fleets.
+        """
+        nb = 0
+        for f in self.fleets:
+            if f.owner is player:
+                nb += f.nb_ships
+        return nb
+
+    def nb_ships_on_planets(self, player):
+        """
+        Return the number of ships belonging to the player, on planets.
+        """
         nb = 0
         for p in self.planets:
             if p.owner is player:
                 nb += p.nb_ships
-        for f in self.fleets:
-            if f.owner is player:
-                nb += f.nb_ships
         return nb
 
     @property
