@@ -6,6 +6,7 @@ from class_Fleet import *
 from class_Planet import *
 from class_Universe import *
 from class_Player import *
+from const import *
 
 # -------------------------------------------------------------------------------------------------
 def _create_circle(self, x, y, r, **kwargs):
@@ -128,7 +129,7 @@ class GUI():
 
 # =================================================================================================
 if __name__ == "__main__":
-    timeline = pickle.load(open('history_save', 'rb'))
+    timeline = pickle.load(open(HISTORY_FILE, 'rb'))
     gui = GUI(timeline[0].size, timeline)
     gui.draw_universe(timeline[0])
     gui.display_window()

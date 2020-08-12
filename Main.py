@@ -5,22 +5,11 @@
 #  Main Function
 #  
 
-from class_Fleet import *
-from class_Planet import *
 from class_Universe import *
 from class_Player import *
-from class_GUI import *
+from game import *
 
 from AI_dumb import *
-
-import os
-from json import dumps, loads
-from subprocess import check_output, TimeoutExpired
-import pickle
-import copy
-
-# nb max of turns
-COUNTER_MAX = 100
 
 # -------------------------------------------------------------------------------------------------
 def display_universe(universe):
@@ -54,124 +43,28 @@ def display_universe(universe):
     """
 
 # -------------------------------------------------------------------------------------------------
-def get_ai_moves(data_string):
-    """
-    Calls an AI program, gives it the current turn data, and retrieve a list of moves
-    """
-    # create a pipe to a child process 
-    data, temp = os.pipe()
-    # write to STDIN as a byte object(convert string 
-    # to bytes with encoding utf8) 
-    os.write(temp, bytes(data_string, "utf-8")); 
-    os.close(temp)
+# creation of the neutral player... which is not a player
+player_neutral = Player(ai=None)
+# creation of the players
+players = [
+    Player(ai=AI_dumb),
+    Player(ai=AI_dumb)
+]
 
-    try:
-        # store output of the program as a byte string in s
-        ai_output = check_output("py draft/fake_AI.py", stdin=data, shell=True, timeout=1)
-    except TimeoutExpired:
-        return ""
-    
-    moves = ai_output.decode("utf-8")
-    return moves
-
-# -------------------------------------------------------------------------------------------------
 # creation of the universe
 universe = Universe()
-universe.big_bang(size=10, nb_planets=10, size_planet_max=3, coef_production=1, coef_max_ships=20, nb_players=2)
+universe.big_bang(
+    size=10,
+    nb_planets=10,
+    size_planet_max=3,
+    list_players=players,
+    player_neutral=player_neutral,
+    coef_production=COEF_PRODUCTION,
+    coef_max_ships=COEF_MAX_SHIP
+)
 
-# timeline
-timeline = [copy.deepcopy(universe)]
-
-# beginning of the game
-while (universe.winner is None) and (universe.turn < COUNTER_MAX):
-    # serialisation of the univers
-    # display_universe(universe)
-    list_planets = [
-        {
-            "x":p.x, "y":p.y,
-            "size":p.size,
-            "production_per_turn":p.production_per_turn,
-            "nb_max_ships":p.nb_max_ships,
-            "owner":p.owner.color,
-            "nb_ships":p.nb_ships
-            }
-            for p in universe.planets
-    ]
-    list_fleets = [
-        {
-            "starting_x":f.starting_planet.x,
-            "starting_y":f.starting_planet.y,
-            "destination_x":f.destination_planet.x,
-            "destination_y":f.destination_planet.y,
-            "owner":f.owner.color,
-            "nb_ships":f.nb_ships
-        }
-        for f in universe.fleets
-    ]
-    data = {"planets":list_planets, "fleets":list_fleets}
-    data_string = dumps(data)
-    # print(data_string)
-
-    # get moves player 1 to n
-    for player in universe.players:
-        pass  # TODO
-        ai_output = AI_dumb(data_string, player.color)
-        # player_moves = loads(test_AI_input)  # for test purpose
-        # ai_output = get_ai_moves(data_string)
-        
-        # if universe.turn > 11:
-        #     a=1
-        #     pass
-
-        player_moves = loads(ai_output)
-        if type(player_moves) != list:  # moves are not corrects => next player
-            continue
-
-        # play moves
-        for move in player_moves:
-            # retrieve planets, if they exist
-            try:
-                starting_planet_pos = move["starting_planet"]
-                destination_planet_pos = move["destination_planet"]
-            except KeyError:
-                continue
-            
-            try:
-                s_planet_pos_x = int(starting_planet_pos["x"])
-                s_planet_pos_y = int(starting_planet_pos["y"])
-                d_planet_pos_x = int(destination_planet_pos["x"])
-                d_planet_pos_y = int(destination_planet_pos["y"])
-            except (ValueError, KeyError):
-                continue
-
-            starting_planet = destination_planet = None
-            for planet in universe.planets:
-                if (s_planet_pos_x == planet.x) and (s_planet_pos_y == planet.y):
-                    starting_planet = planet
-                if (d_planet_pos_x == planet.x) and (d_planet_pos_y == planet.y):
-                    destination_planet = planet
-            
-            if starting_planet is None or destination_planet is None:
-                continue
-            elif starting_planet is destination_planet:
-                continue
-            else:
-                # check that the starting planet owner is the move emitter
-                if starting_planet.owner is not player:
-                    continue
-
-                # retrieve the number of ships
-                nb_ships = move["nb_ships"]
-                if nb_ships > starting_planet.nb_ships:
-                    continue
-
-            # the move is only emitted if it's valid
-            universe.take_off(starting_planet, destination_planet, nb_ships, speed=2)
-
-    # next turn
-    universe.next_turn()
-    timeline.append(copy.deepcopy(universe))
-
+timeline = game(universe, nb_max_turn=COUNTER_MAX)  # play the game
+final = timeline[-1]
 
 # universe.take_off(
 #     planet=universe.planets[0],
@@ -184,10 +77,10 @@ while (universe.winner is None) and (universe.turn < COUNTER_MAX):
 #     display_universe(universe)
 
 print(f"End at turn {universe.turn}")
-if universe.winner is not None:
-    print(f"The winner is {universe.winner.color}")
+if final.winner is not None:
+    print(f"The winner is {final.winner.color}")
 else:
     print("No winner!")
 
 # history
-pickle.dump(timeline, open('history_save', 'wb'))
+pickle.dump(timeline, open(HISTORY_FILE, 'wb'))
