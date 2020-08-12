@@ -16,8 +16,8 @@ class Universe():
     """
     Definition of the universe
     - size = size for the square grid (from 0 to size-1) -> int
-    - planets = some planets -> [class Planet]
-    - fleets = some fleets -> [class Fleet]
+    - planets = some planets -> set(class Planet)
+    - fleets = some fleets -> set(class Fleet)
     - players = list of the players -> [class Player]
     - player_neutral = neutral player present at the beginning of the game -> class Player
     - nb_players = number of players -> int
@@ -61,7 +61,7 @@ class Universe():
         # creation of the players, and their starting planets
         self.nb_players = nb_players
         self.players = []
-        self.planets = []
+        self.planets = set()
         occupied_positions = [(0, 0), (size-1, size-1), (0, size-1), (size-1, 0)]  # starting planets
         for i in range(nb_players):
             player = Player()
@@ -74,7 +74,7 @@ class Universe():
                 nb_ships=1,
                 production_per_turn=1*coef_production,
                 nb_max_ships=1*coef_max_ships)
-            self.planets.append(planet)
+            self.planets.add(planet)
 
        # place the neutral planets and the neutral player
         for i in range(nb_planets-nb_players):
@@ -91,10 +91,10 @@ class Universe():
                 nb_ships=planet_size,
                 production_per_turn=planet_size*coef_production,
                 nb_max_ships=planet_size*coef_max_ships)
-            self.planets.append(planet)
+            self.planets.add(planet)
         
         # fleets initialization
-        self.fleets = []
+        self.fleets = set()
 
         # size initialization
         self.size = size
@@ -112,13 +112,14 @@ class Universe():
         for planet in self.planets:
             planet.next_turn()
 
-        fleets_to_remove = []
+        fleets_to_remove = set()
         for fleet in self.fleets:
             fleet.next_turn()
             if fleet.turns_before_arrival == 0:
                 self.landing(fleet, fleet.destination_planet)
-                fleets_to_remove.append(fleet)
-        self.fleets = [f for f in self.fleets if f not in fleets_to_remove]
+                fleets_to_remove.add(fleet)
+        self.fleets = self.fleets.difference(fleets_to_remove)
+
 
         return
     
@@ -135,7 +136,7 @@ class Universe():
         """
         fleet = Fleet(planet.owner, planet, destination, nb_ships, speed)
         planet.take_off_ships(nb_ships)
-        self.fleets.append(fleet)
+        self.fleets.add(fleet)
         return
 
     def nb_ships(self, player):
