@@ -21,6 +21,7 @@ import copy
 
 # nb max of turns
 COUNTER_MAX = 100
+HISTORY_FILE = "history_save"
 
 # -------------------------------------------------------------------------------------------------
 def display_universe(universe):
@@ -62,7 +63,7 @@ def get_ai_moves(data_string):
     data, temp = os.pipe()
     # write to STDIN as a byte object(convert string 
     # to bytes with encoding utf8) 
-    os.write(temp, bytes(data_string, "utf-8")); 
+    os.write(temp, bytes(data_string, "utf-8"))
     os.close(temp)
 
     try:
