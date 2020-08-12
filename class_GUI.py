@@ -24,6 +24,7 @@ class GUI():
     Graphical User Interface
     - root = the main GUI window -> class Tk
     - canvas = the canvas inside the root -> class Canvas
+    - scale_ratio = the ratio used to rescale the canvas -> float
 
     Optional
     - timeline = a list of Universe from a game -> [class Universe]
@@ -36,13 +37,33 @@ class GUI():
         """
         universe_size: the size of the universe, used to create the canvas
         """
+        # create window
         self.root = tk.Tk()
         self.root.title("Spaceship_wars_GUI")
         self.root.resizable(False, False)
-        self.canvas = tk.Canvas(self.root, height=conv(universe_size), width=conv(universe_size), background="white")
-        self.canvas.grid(column=0, row=1)
+        screen_smaller_dim = min(self.root.winfo_screenwidth(), self.root.winfo_screenheight())
+        title_bar_height = 30
+        self.root.geometry(f'{screen_smaller_dim-title_bar_height}x{screen_smaller_dim-title_bar_height}')
+        
+        # configure grid to stretch horizontally
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(1, weight=1)
 
+        # add timeline nav if and only if there is one
         self.timeline = timeline
+        if self.timeline:
+            scale = tk.Scale(self.root, orient='h',
+            from_=0, to=len(self.timeline)-1, tickinterval=5, showvalue=True, command=self.turn_update)
+            scale.grid(column=0, row=0, sticky='we')
+
+        # add canvas
+        self.canvas = tk.Canvas(self.root, background="white")
+        self.canvas.grid(column=0, row=1, pady=(0, 20), sticky='ns')
+        self.root.update()
+        self.canvas.config(width=self.canvas.winfo_height())
+
+        # compute the scale ratio
+        self.scale_ratio = self.canvas.winfo_height() / conv(universe_size)
 
     def clear_canvas(self):
         self.canvas.delete("all")
@@ -51,12 +72,6 @@ class GUI():
     def display_window(self):
         self.root.mainloop()
         return
-
-    def add_timeline_nav(self, timeline_length):
-        scale = tk.Scale(self.root, orient='h', length=self.canvas.cget('width'),
-            from_=0, to=timeline_length-1, tickinterval=5, showvalue=True, label='Turns',
-            command=self.turn_update)
-        scale.grid(column=0, row=0)
 
     def turn_update(self, turn_s):
         self.clear_canvas()
@@ -71,6 +86,9 @@ class GUI():
 
         for fleet in universe.fleets:
             self.draw_fleet(fleet)
+        
+        # rescale the Canvas
+        self.canvas.scale("all", 0, 0, self.scale_ratio, self.scale_ratio)
         return
 
     def draw_planet(self, planet):
@@ -103,7 +121,7 @@ class GUI():
             fleet_pos_x + ((conv(fleet.destination_planet.x) - fleet_pos_x) * ratio),
             fleet_pos_y + ((conv(fleet.destination_planet.y) - fleet_pos_y) * ratio),
             arrow='last', width=4, fill=fleet.owner.color)
-        
+
         # draw the number of ships
         self.canvas.create_text(fleet_pos_x, fleet_pos_y-20, text=str(fleet.nb_ships), fill=fleet.owner.color)
         return
@@ -112,6 +130,5 @@ class GUI():
 if __name__ == "__main__":
     timeline = pickle.load(open('history_save', 'rb'))
     gui = GUI(timeline[0].size, timeline)
-    gui.add_timeline_nav(len(timeline))
     gui.draw_universe(timeline[0])
     gui.display_window()
