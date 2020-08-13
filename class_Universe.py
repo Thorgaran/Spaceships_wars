@@ -118,9 +118,11 @@ class Universe():
 
         self.turn += 1
         
+        # planets
         for planet in self.planets:
             planet.next_turn()
 
+        # fleets
         landing_fleet = {}  # will contain {(destination_planet0, arrival_time_0):[fleet_0, fleet_3], (destination_planet1, arrival_time_2):[fleet_1], ...}
         for fleet in self.fleets:
             fleet.next_turn()
@@ -133,14 +135,21 @@ class Universe():
         # shuffle fleets which arrive at the exact same time on the same planet
         for fleets in landing_fleet.values():
             shuffle(fleets)
+        # order fleets by arrival time
+        landing = [(tup[1], flts) for tup, flts in landing_fleet.items()]  # [(arrival_time_0, [fleet_0, fleet_3]), ...]
+        landing.sort(key=lambda tup: tup[0])
+        landing = [f for _, f in landing]  # [[fleet_0, fleet_2], ...]
+        # landing
         # fight between fleets which arrive at the exact same time on the same planet
-        landing = []
-        for fleets_in_competition in landing_fleet.values():
+        for fleets_in_competition in landing:
             self.fleets = self.fleets.difference(fleets_in_competition)  # landing fleets don't exist anymore
             while len(fleets_in_competition) > 1:  # more than one fleet remains => they must fight before landing
                 fl0 = fleets_in_competition[0]
                 fl1 = fleets_in_competition[1]
-                nb = fl0.nb_ships - fl1.nb_ships
+                if fl0.owner == fl1.owner:  # if fleets are owned by the same player, the number of ships are added
+                    nb = fl0.nb_ships + fl1.nb_ships
+                else:  # if fleets are owned by 2 different players
+                    nb = fl0.nb_ships - fl1.nb_ships
                 if nb == 0:  # anhilation
                     fleets_in_competition = fleets_in_competition[2:]
                 elif nb > 0:  # fl1 has lost
