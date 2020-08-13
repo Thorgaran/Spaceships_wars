@@ -9,7 +9,7 @@ from class_Planet import *
 from class_Fleet import *
 from class_Player import *
 
-from random import randint, seed
+from random import randint, seed, shuffle
 
 class Universe():
     """
@@ -105,21 +105,37 @@ class Universe():
 
     def next_turn(self):
         """
-        Prepare the next turn
+        Prepare the next turn : next turn for each planet and each fleet which is arrived must land
+        To determine the landing order of the fleets, the rules are
+        1/ the arrival_time parameter determine which land first
+        2/ if multiple fleets have the exact same arrival_time parameter, random is used
         """
         self.turn += 1
         
         for planet in self.planets:
             planet.next_turn()
 
-        fleets_to_remove = set()
+        landing_fleet = {}  # will contain {arrival_time_0:[fleet_0, fleet_3], arrival_time_2:[fleet_1], ...}
         for fleet in self.fleets:
             fleet.next_turn()
             if fleet.turns_before_arrival == 0:
-                self.landing(fleet, fleet.destination_planet)
-                fleets_to_remove.add(fleet)
-        self.fleets = self.fleets.difference(fleets_to_remove)
+                other = landing_fleet.get(fleet.arrival_time, [])
+                other.append(fleet)
+                landing_fleet[fleet.arrival_time] = other
 
+        # shuffle fleets which arrive at the exact same time
+        for fleets in landing_fleet.values():
+            shuffle(fleets)
+        # order arrival fleets
+        landing = []
+        for time, fleets in landing_fleet.items():
+            for f in fleets:
+                landing.append((time, f))
+        landing.sort(key=lambda x:x[0])
+        # each fleet must land
+        for _, fleet in landing:
+            self.landing(fleet, fleet.destination_planet)
+            self.fleets.remove(fleet)
 
         return
     
@@ -134,7 +150,7 @@ class Universe():
         """
         A fleet is taking off from the planet, to another planet (the destination).
         """
-        fleet = Fleet(planet.owner, planet, destination, nb_ships, speed)
+        fleet = Fleet(planet.owner, planet, destination, nb_ships, speed, current_turn=self.turn)
         planet.take_off_ships(nb_ships)
         self.fleets.add(fleet)
         return

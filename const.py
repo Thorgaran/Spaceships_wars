@@ -20,7 +20,7 @@ HISTORY_FILE = "history_save"
 # color of the player
 COLOR_PLAYER_LIGHT = {
     0:"gray",
-    1:"deep sky blue",
+    1:"blue",
     2:"red",
     3:"green2",
     4:"gold"
