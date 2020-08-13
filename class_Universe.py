@@ -10,6 +10,7 @@ from class_Fleet import *
 from class_Player import *
 
 from random import randint, seed, shuffle
+seed("tartiflett")
 
 class Universe():
     """
@@ -108,42 +109,57 @@ class Universe():
         Prepare the next turn : next turn for each planet and each fleet which is arrived must land
         To determine the landing order of the fleets, the rules are
         1/ the arrival_time parameter determine which land first
-        2/ if multiple fleets have the exact same arrival_time parameter, random is used
+        2/ if multiple fleets have the exact same arrival_time parameter, they fight each other in random order
+           and the survivor can land
+        
+        note : the arrival time float is round with 8 decimals (round_factor)
         """
+        round_factor = 8
+
         self.turn += 1
         
         for planet in self.planets:
             planet.next_turn()
 
-        landing_fleet = {}  # will contain {arrival_time_0:[fleet_0, fleet_3], arrival_time_2:[fleet_1], ...}
+        landing_fleet = {}  # will contain {(destination_planet0, arrival_time_0):[fleet_0, fleet_3], (destination_planet1, arrival_time_2):[fleet_1], ...}
         for fleet in self.fleets:
             fleet.next_turn()
             if fleet.turns_before_arrival == 0:
-                other = landing_fleet.get(fleet.arrival_time, [])
+                f_tupple = (fleet.destination_planet, round(fleet.arrival_time, round_factor))
+                other = landing_fleet.get(f_tupple, [])
                 other.append(fleet)
-                landing_fleet[fleet.arrival_time] = other
+                landing_fleet[f_tupple] = other
 
-        # shuffle fleets which arrive at the exact same time
+        # shuffle fleets which arrive at the exact same time on the same planet
         for fleets in landing_fleet.values():
             shuffle(fleets)
-        # order arrival fleets
+        # fight between fleets which arrive at the exact same time on the same planet
         landing = []
-        for time, fleets in landing_fleet.items():
-            for f in fleets:
-                landing.append((time, f))
-        landing.sort(key=lambda x:x[0])
-        # each fleet must land
-        for _, fleet in landing:
-            self.landing(fleet, fleet.destination_planet)
-            self.fleets.remove(fleet)
+        for fleets_in_competition in landing_fleet.values():
+            self.fleets = self.fleets.difference(fleets_in_competition)  # landing fleets don't exist anymore
+            while len(fleets_in_competition) > 1:  # more than one fleet remains => they must fight before landing
+                fl0 = fleets_in_competition[0]
+                fl1 = fleets_in_competition[1]
+                nb = fl0.nb_ships - fl1.nb_ships
+                if nb == 0:  # anhilation
+                    fleets_in_competition = fleets_in_competition[2:]
+                elif nb > 0:  # fl1 has lost
+                    fl0.nb_ships = nb
+                    del fleets_in_competition[1]
+                else:  # fl0 has lost
+                    fl1.nb_ships = -nb
+                    del fleets_in_competition[0]
+            # the remaining fleet can land... if one remains
+            if fleets_in_competition:
+                self.landing(fleets_in_competition[0])
 
         return
     
-    def landing(self, fleet, planet):
+    def landing(self, fleet):
         """
         A fleet is landing on the planet.
         """
-        planet.landing_ships(fleet)
+        fleet.destination_planet.landing_ships(fleet)
         return
     
     def take_off(self, planet, destination, nb_ships, speed):
