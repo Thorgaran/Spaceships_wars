@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 #
 # 
-#  Dumb AI
+#  AI
+#  The AI take the state of the universe and return some fleet's moves
 #  
 
 from json import dumps, loads
 from class_Planet import *
+from class_Fleet import *
 
 import random
 
@@ -32,10 +34,20 @@ def move_creation(planet_f, planet_t, nb_ship):
     return(move)
 
 # -------------------------------------------------------------------------------------------------
-def AI_dumb(state, number_AI):
+def AI_0(state, number_AI):
     """
-    Take the state of the universe and return some random moves...
-    number_AI is the number of the player in the universe.
+    Strategy : do nothing...
+    """ 
+    return dumps([])
+
+# -------------------------------------------------------------------------------------------------
+def AI_1(state, number_AI):
+    """
+    Strategy :
+    - for each of its planets p0, search an other planet
+      * belonging to an other planet p, or neutral
+      * with p0.nb_ship - 1 > p.nb_ship
+    - if so, a fleet with (p0.nb_ship - 1) ships is send from p0 to p
     """
     universe = loads(state)
     # print(universe)
@@ -79,6 +91,11 @@ def AI_dumb(state, number_AI):
     # print(move_s)
     return(move_s)
 
+# =================================================================================================
+if __name__ == "__main__":
+    state = """{"planets": [{"x": 0, "y": 0, "size": 1, "production_per_turn": 1, "nb_max_ships": 10, "owner": "blue", "nb_ships": 1}, {"x": 9, "y": 9, "size": 1, "production_per_turn": 1, "nb_max_ships": 10, "owner": "red", "nb_ships": 1}, {"x": 7, "y": 6, "size": 1, "production_per_turn": 1, "nb_max_ships": 10, "owner": "gray", "nb_ships": 10}, {"x": 5, "y": 4, "size": 2, "production_per_turn": 2, "nb_max_ships": 20, "owner": "gray", "nb_ships": 10}, {"x": 8, "y": 3, "size": 3, "production_per_turn": 3, "nb_max_ships": 30, "owner": "gray", "nb_ships": 10}, {"x": 4, "y": 6, "size": 1, "production_per_turn": 1, "nb_max_ships": 10, "owner": "gray", "nb_ships": 10}, {"x": 7, "y": 2, "size": 3, "production_per_turn": 3, "nb_max_ships": 30, "owner": "gray", "nb_ships": 10}, {"x": 6, "y": 7, "size": 1, "production_per_turn": 1, "nb_max_ships": 10, "owner": "gray", "nb_ships": 10}, {"x": 6, "y": 3, "size": 3, "production_per_turn": 3, "nb_max_ships": 30, "owner": "gray", "nb_ships": 10}, {"x": 3, "y": 7, "size": 2, "production_per_turn": 2, "nb_max_ships": 20, "owner": "gray", "nb_ships": 10}], "fleets": []}"""
+    AI_dumb(state, number_AI="blue")
+
 # test_AI_input = """[
 #     {
 #         "starting_planet": {
@@ -104,8 +121,3 @@ def AI_dumb(state, number_AI):
 #     }
 # ]
 # """
-
-# =================================================================================================
-if __name__ == "__main__":
-    state = """{"planets": [{"x": 0, "y": 0, "size": 1, "production_per_turn": 1, "nb_max_ships": 10, "owner": "blue", "nb_ships": 1}, {"x": 9, "y": 9, "size": 1, "production_per_turn": 1, "nb_max_ships": 10, "owner": "red", "nb_ships": 1}, {"x": 7, "y": 6, "size": 1, "production_per_turn": 1, "nb_max_ships": 10, "owner": "gray", "nb_ships": 10}, {"x": 5, "y": 4, "size": 2, "production_per_turn": 2, "nb_max_ships": 20, "owner": "gray", "nb_ships": 10}, {"x": 8, "y": 3, "size": 3, "production_per_turn": 3, "nb_max_ships": 30, "owner": "gray", "nb_ships": 10}, {"x": 4, "y": 6, "size": 1, "production_per_turn": 1, "nb_max_ships": 10, "owner": "gray", "nb_ships": 10}, {"x": 7, "y": 2, "size": 3, "production_per_turn": 3, "nb_max_ships": 30, "owner": "gray", "nb_ships": 10}, {"x": 6, "y": 7, "size": 1, "production_per_turn": 1, "nb_max_ships": 10, "owner": "gray", "nb_ships": 10}, {"x": 6, "y": 3, "size": 3, "production_per_turn": 3, "nb_max_ships": 30, "owner": "gray", "nb_ships": 10}, {"x": 3, "y": 7, "size": 2, "production_per_turn": 2, "nb_max_ships": 20, "owner": "gray", "nb_ships": 10}], "fleets": []}"""
-    AI_dumb(state, color_AI="blue")

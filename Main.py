@@ -11,7 +11,7 @@ from class_GUI import *
 from game import *
 from const import *
 
-from AI_dumb import *
+from AI import *
 
 from itertools import permutations
 from math import factorial
@@ -107,7 +107,7 @@ def print_results(results, number_universe, flag_fair, players, neutral_player, 
 
 # -------------------------------------------------------------------------------------------------
 # number of games = number of univers
-number_of_univers = 10
+number_of_univers = 50
 
 # if flag_fair is True, each univers will be played with players in each starting position
 # Warning : this option multiply the number of game (= number_of_univers) depending of the number of player
@@ -120,8 +120,8 @@ player_neutral = Player(ai=None, name="neutral", color=COLOR_PLAYER_LIGHT[0])
 players = [
     # Player(ai=AI_dumb, name="AI_1", color=COLOR_PLAYER_LIGHT[1]),
     # Player(ai=AI_dumb, name="AI_2", color=COLOR_PLAYER_LIGHT[2]),
-    Player(ai=AI_dumb, name="AI_3", color=COLOR_PLAYER_LIGHT[3]),
-    Player(ai=AI_dumb, name="AI_4", color=COLOR_PLAYER_LIGHT[4])
+    Player(ai=AI_0, name="AI_0", color=COLOR_PLAYER_LIGHT[3]),
+    Player(ai=AI_1, name="AI_1", color=COLOR_PLAYER_LIGHT[4])
 ]
 
 results_glob = {}  # {(universe0, perm0):{"turn":int, "winner":None/int}, ...}
