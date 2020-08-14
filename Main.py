@@ -90,6 +90,9 @@ def print_results(results, number_universe, flag_fair, players, neutral_player, 
     # print results
     print()
     print("=== Results ===")
+    if nb_unfinished_games == nb_games:
+        print("All games are unfinished")
+        return
     print("End of games at turn (finished game only)")
     print(f" - mean : {round(mean(list_turn), 1)}")
     print(f" - median : {median(list_turn)}")
