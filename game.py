@@ -41,16 +41,23 @@ def get_ai_moves(data_string):
     return moves
 
 # -------------------------------------------------------------------------------------------------
-def game(universe, nb_max_turn):
+def game(universe, nb_max_turn, speed):
     """
     Play a game
     universe = initial position of the game -> class Universe
     nb_max_turn = nb max of turns for a game -> int
+    speed = speed of the ships -> float
 
     Return the timeline which contain the univers, for each turn -> [class Universe]
     """
     # timeline
     timeline = [copy.deepcopy(universe)]
+
+    # parameters
+    parameters = {
+        "nb_max_turn":nb_max_turn,
+        "speed":speed
+    }
 
     # beginning of the game
     while (universe.winner is None) and (universe.turn < nb_max_turn):
@@ -79,13 +86,17 @@ def game(universe, nb_max_turn):
             for f in universe.fleets
         ]
         data = {"planets":list_planets, "fleets":list_fleets}
-        data_string = dumps(data)
         # print(data_string)
 
         # get moves player 1 to n
         for player in universe.players:
+            parameters["player_nb"] = player.number
+            parameters["turn"] = universe.turn
+            data["parameters"] = parameters
+            data_string = dumps(data)
+
             if isfunction(player.ai):  # function in Python
-                ai_output = player.ai(data_string, player.number)
+                ai_output = player.ai(data_string)
             elif type(player.ai) is str:  # other program
                 pass  # TODO
             else:
@@ -140,7 +151,7 @@ def game(universe, nb_max_turn):
                         continue
 
                 # the move is only emitted if it's valid
-                universe.take_off(starting_planet, destination_planet, nb_ships, speed=2)
+                universe.take_off(starting_planet, destination_planet, nb_ships, speed=speed)
 
         # next turn
         universe.next_turn()

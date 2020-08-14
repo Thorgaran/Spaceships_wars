@@ -12,6 +12,8 @@ COUNTER_MAX = 100
 COEF_PRODUCTION = 1
 # coefficient to cap the number of ships on a planet -> float
 COEF_MAX_SHIP = 20
+# speed of the ships -> float
+SPEED = 2
 
 # other consts ------------------------------------------------------------------------------------
 # name of the file used to store the game's history on disk -> str

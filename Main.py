@@ -110,7 +110,7 @@ def print_results(results, number_universe, flag_fair, players, neutral_player, 
 
 # -------------------------------------------------------------------------------------------------
 # number of games = number of univers
-number_of_univers = 50
+number_of_univers = 10
 
 # if flag_fair is True, each univers will be played with players in each starting position
 # Warning : this option multiply the number of game (= number_of_univers) depending of the number of player
@@ -123,8 +123,8 @@ player_neutral = Player(ai=None, name="neutral", color=COLOR_PLAYER_LIGHT[0])
 players = [
     # Player(ai=AI_dumb, name="AI_1", color=COLOR_PLAYER_LIGHT[1]),
     # Player(ai=AI_dumb, name="AI_2", color=COLOR_PLAYER_LIGHT[2]),
-    Player(ai=AI_0, name="AI_0", color=COLOR_PLAYER_LIGHT[3]),
-    Player(ai=AI_1, name="AI_1", color=COLOR_PLAYER_LIGHT[4])
+    Player(ai=AI_2, name="AI_2", color=COLOR_PLAYER_LIGHT[3]),
+    Player(ai=AI_1, name="AI_0", color=COLOR_PLAYER_LIGHT[4])
 ]
 
 results_glob = {}  # {(universe0, perm0):{"turn":int, "winner":None/int}, ...}
@@ -145,7 +145,7 @@ for universe_number in range(number_of_univers):
             universe = Universe()
             universe.big_bang(
                 size=10,
-                nb_planets=5,
+                nb_planets=20,
                 size_planet_max=3,
                 list_players=list_players,
                 player_neutral=player_neutral,
@@ -161,7 +161,7 @@ for universe_number in range(number_of_univers):
             universe = deepcopy(universe0)
             universe.change_players(list_players)
 
-        timeline = game(universe, nb_max_turn=COUNTER_MAX)  # play the game
+        timeline = game(universe, nb_max_turn=COUNTER_MAX, speed=SPEED)  # play the game
         final = timeline[-1]
 
         result = {"turn":universe.turn}
