@@ -62,7 +62,7 @@ def game(universe, nb_max_turn):
                 "size":p.size,
                 "production_per_turn":p.production_per_turn,
                 "nb_max_ships":p.nb_max_ships,
-                "owner":p.owner.color,
+                "owner":p.owner.number,
                 "nb_ships":p.nb_ships
                 }
                 for p in universe.planets
@@ -73,7 +73,7 @@ def game(universe, nb_max_turn):
                 "starting_y":f.starting_planet.y,
                 "destination_x":f.destination_planet.x,
                 "destination_y":f.destination_planet.y,
-                "owner":f.owner.color,
+                "owner":f.owner.number,
                 "nb_ships":f.nb_ships
             }
             for f in universe.fleets
@@ -85,7 +85,7 @@ def game(universe, nb_max_turn):
         # get moves player 1 to n
         for player in universe.players:
             if isfunction(player.ai):  # function in Python
-                ai_output = player.ai(data_string, player.color)
+                ai_output = player.ai(data_string, player.number)
             elif type(player.ai) is str:  # other program
                 pass  # TODO
             else:

@@ -32,10 +32,10 @@ def move_creation(planet_f, planet_t, nb_ship):
     return(move)
 
 # -------------------------------------------------------------------------------------------------
-def AI_dumb(state, color_AI):
+def AI_dumb(state, number_AI):
     """
     Take the state of the universe and return some random moves...
-    color_AI is the color of the player in the universe.
+    number_AI is the number of the player in the universe.
     """
     universe = loads(state)
     # print(universe)
@@ -48,7 +48,7 @@ def AI_dumb(state, color_AI):
         planet = Planet(
             x=p["x"],
             y=p["y"],
-            owner=p["owner"],  # warning : it's a color and not a player
+            owner=p["owner"],  # warning : it's a number and not a player
             player_neutral=None,
             size=p["size"],
             production_per_turn=p["production_per_turn"],
@@ -62,13 +62,13 @@ def AI_dumb(state, color_AI):
 
     move = []
     # Strategy
-    my_planets = [p for p in planets if p.owner == color_AI]
+    my_planets = [p for p in planets if p.owner == number_AI]
     for p in my_planets:
         nb_ships = p.nb_ships
         list_possible_dest = []
         for dest in planets:
             # print(f"{dest.owner=}")
-            if (dest.nb_ships < nb_ships-1) and (dest.owner != color_AI):
+            if (dest.nb_ships < nb_ships-1) and (dest.owner != number_AI):
                 # the planet can be colonized!
                 list_possible_dest.append(dest)
         if list_possible_dest:
